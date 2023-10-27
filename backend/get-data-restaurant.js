@@ -1,11 +1,13 @@
 const AWS = require('aws-sdk');
 
 const dynamoDB = new AWS.DynamoDB.DocumentClient({ region: 'us-east-1' });
+const lambda = new AWS.Lambda();
 
 exports.handler = async (event, context) => {
   // Example input JSON
-  const inputJson = event;
-
+  console.log(event);
+  const inputJson = JSON.parse(event.body);
+  console.log(inputJson);
   // DynamoDB Query parameters
   const params = {
     TableName: 'Restaurant',
@@ -37,7 +39,7 @@ exports.handler = async (event, context) => {
     }
 
     // Check and add 'city' condition
-    if (inputJson.city != null) {
+    if (inputJson.city != null ) {
       params.FilterExpression += '#city = :cityValue';
       params.ExpressionAttributeNames = {
         ...params.ExpressionAttributeNames,
@@ -54,7 +56,7 @@ exports.handler = async (event, context) => {
       if (params.FilterExpression != '') {
         params.FilterExpression += ' AND '; // Add AND if 'city' condition exists
       }
-      params.FilterExpression += '#resRating <= :ratingValue';
+      params.FilterExpression += '#resRating = :ratingValue';
       params.ExpressionAttributeNames = {
         ...params.ExpressionAttributeNames,
         '#resRating': 'resRating', // Assuming 'rating' is the attribute name in DynamoDB
@@ -69,15 +71,28 @@ exports.handler = async (event, context) => {
   try {
     console.log(params.FilterExpression);
     // Call DynamoDB to scan the table based on the conditions
-    const result = await dynamoDB.scan(params).promise();
-
-    // Print items to the console
-    console.log('Items retrieved from DynamoDB based on input conditions:');
-    result.Items.forEach(item => {
-      console.log(JSON.stringify(item, null, 2));
-    });
-
-    return { statusCode: 200, body: JSON.stringify(result) , input: JSON.stringify(params.FilterExpression)};
+    var result = await dynamoDB.scan(params).promise();
+    if (inputJson.availability) {
+      const paramForLambda = {
+      FunctionName: 'filter-restaurant-availability',
+      InvocationType: 'RequestResponse',
+      LogType: 'None',
+      Payload: JSON.stringify(result), 
+      };
+      result = await lambda.invoke(paramForLambda).promise();
+    }
+    
+    const newArray = result.Items.map(item => ({
+    city: item.city,
+    openingTime: item.openingTime,
+    closingTime: item.closingTime,
+    location: item.location,
+    name: item.name,
+    photo: item.photo,
+    resRating: item.resRating
+    }));
+    console.log(newArray);
+    return { statusCode: 200, body: JSON.stringify(newArray)};
   } catch (err) {
     console.error('Error retrieving items from DynamoDB:', err);
     return { statusCode: 500, body: `Error retrieving items from DynamoDB: ${err.message}` };
