@@ -1,33 +1,35 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 function Getdata() {
-  const [city, setCity] = useState('Halifax'); // Defaulted to Halifax
-  const [rating, setRating] = useState('2');   // Defaulted to 2
+  const [city, setCity] = useState('Halifax');
+  const [rating, setRating] = useState('2');
   const [restaurants, setRestaurants] = useState([]);
   const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const apiEndpoint = 'https://j7fjhegj3f.execute-api.us-east-1.amazonaws.com/default/get-data-restaurant';
+    const apiEndpoint = 'https://4nghc9vm23.execute-api.us-east-1.amazonaws.com/dev/get-data-restaurant';
     const requestBody = {
       city: city,
       rating: rating
     };
 
-    fetch(apiEndpoint, {
-      
-      method: 'POST',
-      headers: {
-        //'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin':'*',
-        'Access-Control-Allow-Headers':'*'
-      },
-      body: JSON.stringify(requestBody),
-    })
-      .then((response) => response.json())
-      .then((data) => setRestaurants(data))
-      .catch((err) => setError(err));
+    try {
+      // Make a POST request
+      const response = await axios.post(apiEndpoint, requestBody);
+
+      // Handle the response data
+      console.log(response.data);
+      // Check if the 'restaurants' property is an array
+      const receivedRestaurants = response.data.restaurants || [];
+      setRestaurants(receivedRestaurants);
+    } catch (error) {
+      // Handle errors
+      console.error('Error fetching data:', error);
+      setError(error);
+    }
   };
 
   return (
