@@ -1,0 +1,18 @@
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between; /* Adjust as needed */
+}
+
+.card {
+  width: 30%; /* Adjust the width as needed */
+  margin: 10px;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.card img {
+  width: 100%; /* Make the image fill the container */
+  height: auto; /* Maintain aspect ratio */
+  max-height: 200px; /* Set a maximum height if needed */
+}

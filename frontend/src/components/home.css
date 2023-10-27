@@ -4,7 +4,6 @@ body {
     margin: 0;
     font-family: 'Arial', sans-serif;
     background-color: #f4f4f4;
-
   }
   
   .container {
@@ -65,16 +64,36 @@ body {
   
   li {
     margin-bottom: 20px;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
   
   li img {
-    margin-right: 15px;
+    width: 40%;
+    height: 300px; /* Adjust the height as needed */
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
   }
   
-  li div {
+  li .restaurant-info {
+    padding: 15px;
+  }
+  
+  li .restaurant-info h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  li .restaurant-info p {
     margin-bottom: 8px;
+    color: #666;
+  }
+  
+  li .restaurant-info span {
+    font-weight: bold;
   }
   
   /* Responsive styles */
@@ -86,5 +105,10 @@ body {
     .sidebar {
       width: 100%;
     }
-  }
   
+    li img {
+      padding: 3%;
+      width: 50%; /* Adjust for smaller screens */
+      height: 150px; /* Adjust the height for smaller screens */
+    }
+  }
