@@ -5,6 +5,11 @@ import SignUp from './components/signup';
 import Home from './components/home';
 import Getdata from './components/getdata';
 import Restaurant from './components/restaurant';
+import ReservationForm from './components/ReservationForm';
+import ListReservations from "./components/ListReservations";
+import Reservation from "./components/Reservation";
+import MenuSelection from './components/MenuSelection';
+import ReservedMenuPage from './components/ReservedMenuPage';
 
 function App() {
   return (
@@ -17,6 +22,11 @@ function App() {
       <Route path="/home" element={<Home/>}/>
       <Route path="/getdata" element={<Getdata/>}/>
       <Route path="/restaurant" element={<Restaurant/>}/>
+      <Route path="/createReservation" element={<ReservationForm/>}/>
+      <Route path="/reservations" element={<ListReservations/>}/>
+      <Route path="/reservation" element={<Reservation/>}/>
+      <Route path="/menu-selection" element={<MenuSelection/>} />
+      <Route path="/reserved-menu" element={<ReservedMenuPage/>} />
       </Routes>
       </div>
       </Router>

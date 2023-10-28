@@ -1,51 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Link } from 'react-router-dom'; // Import the Link component
-import './home.css';
+import { admin ,auth , googleProvider, db} from "../config/firebase";
+import { signInWithEmailAndPassword,signInWithPopup } from "firebase/auth";
+import { setDoc, doc } from 'firebase/firestore';
+import { useState } from "react";
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-function Home() {
-  const [city, setCity] = useState('');
-  const [name, setName] = useState('');
-  const [rating, setRating] = useState('');
-  const [restaurants, setRestaurants] = useState([]);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const requestBody = {};
-    const fetchRestaurants = async () => {
-      try {
-        const apiEndpoint = 'https://4nghc9vm23.execute-api.us-east-1.amazonaws.com/dev/get-data-restaurant';
-        const response = await axios.post(apiEndpoint, requestBody);
-
-        const receivedRestaurants = response.data.restaurants || [];
-        setRestaurants(receivedRestaurants);
-      } catch (error) {
-        setError(error);
-      }
-    };
-
-    fetchRestaurants();
-  }, []);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const apiEndpoint = 'https://4nghc9vm23.execute-api.us-east-1.amazonaws.com/dev/get-data-restaurant';
-    const requestBody = {
-      city: city,
-      rating: rating
-    };
-
+function Auth(){
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  console.log(auth?.currentUser?.email);
+    var details
+  const signIn = async () => {
     try {
-      const response = await axios.post(apiEndpoint, requestBody);
-
-      const receivedRestaurants = response.data.restaurants || [];
-      setRestaurants(receivedRestaurants);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      setError(error);
+        await signInWithEmailAndPassword(auth, email, password).then((resp) => {
+        details = resp;
+    });
+        var user = details.user;
+        //console.log("Details->"+details);
+        console.log(JSON.stringify(user));
+        await setDoc(doc(db,"users",user.uid),{
+                email:user.email,
+                name:user.displayName
+            }
+        );
+    navigate('/home');
+    } catch (err){
+      console.error(err);
     }
   };
+
+  const signInWithGoogle = async () => {
+    try {
+     await signInWithPopup(auth,googleProvider).then((resp) =>{
+        details = resp;
+    });
+    var user = details.user;
+    //console.log("Details->"+details);
+    console.log(JSON.stringify(user));
+        await setDoc(doc(db,"users",user.uid),{
+            email:user.email,
+            name:user.displayName
+        }
+  );
+    navigate('/home')
+    } catch (err){
+      console.error(err);
+    }
+  };
+  
+  // const logOut = async () => {
+  //   try {
+  //   await signOut(auth);
+  //   } catch (err){
+  //     console.error(err);
+  //   }
+  // };
 
   return (
     <div className="container">
