@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import the useHistory hook
 import './home.css';
 
 function Home() {
@@ -7,7 +8,8 @@ function Home() {
   const [name, setName] = useState('');
   const [rating, setRating] = useState('');
   const [restaurants, setRestaurants] = useState([]);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null); // Get the history object
+  const navigate = useNavigate();
 
   useEffect(() => {
     const requestBody = {};
@@ -46,6 +48,12 @@ function Home() {
     }
   };
 
+  const navigatePage = (data) => {
+    // Use history.push to navigate to the /restaurant route
+    navigate("/restaurant", { state: { data } });
+  };
+  
+
   return (
     <div className="container">
       <div className="sidebar">
@@ -70,14 +78,17 @@ function Home() {
       <div className="content">
         <ul>
           {restaurants.map((restaurant) => (
-            <li key={restaurant.name}>
-              <img src={restaurant.photo} alt={restaurant.name} width="100" />
-              <div>Name: {restaurant.name}</div>
-              <div>City: {restaurant.city}</div>
-              <div>Location: {restaurant.location}</div>
-              <div>Rating: {restaurant.resRating}</div>
-              <div>Opening Time: {restaurant.openingTime}</div>
-              <div>Closing Time: {restaurant.closingTime}</div>
+            <li key={restaurant.name} className="res">
+              {/* Wrap the contents in a div with an onClick event */}
+              <div className="rest" onClick={() => navigatePage(restaurant.name)}>
+                <img src={restaurant.photo} alt={restaurant.name} width="100" />
+                <div>Name: {restaurant.name}</div>
+                <div>City: {restaurant.city}</div>
+                <div>Location: {restaurant.location}</div>
+                <div>Rating: {restaurant.resRating}</div>
+                <div>Opening Time: {restaurant.openingTime}</div>
+                <div>Closing Time: {restaurant.closingTime}</div>
+              </div>
             </li>
           ))}
         </ul>
