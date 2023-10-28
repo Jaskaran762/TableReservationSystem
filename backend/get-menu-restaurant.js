@@ -2,8 +2,7 @@ const AWS = require('aws-sdk');
 
 exports.handler = async (event, context) => {
     // Get the name from the input event
-    const body = JSON.parse(event.body);
-    const name = body.name
+    const name = event.name
     console.log(name);
 
     // Initialize DynamoDB client
@@ -43,14 +42,12 @@ exports.handler = async (event, context) => {
         const reviewList = result['Items'][0]['menuList'];
 
         return {
-            statusCode: 200,
-            body: JSON.stringify(reviewList)
+            menus: reviewList
         };
     } catch (error) {
         console.error('Error:', error);
 
         return {
-            statusCode: 500,
             body: JSON.stringify({
                 error: `Error: ${error.message}`
             })
