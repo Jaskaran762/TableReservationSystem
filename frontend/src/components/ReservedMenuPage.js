@@ -33,7 +33,9 @@ const ReservedMenuPage = () => {
   // Function to handle the update button click for the entire page
   const handleUpdateClick = () => {
     // Implement the update logic for the entire page here
-    console.log('Update button clicked for the entire page');
+    //update will happen before 1hr of reserved time
+    //update button will disappear from the web page if time left is less than 1hr
+    console.log('Update button clicked for the entire page'); 
     navigate('/menu-selection');
   };
 

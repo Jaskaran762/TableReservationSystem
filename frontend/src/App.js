@@ -9,6 +9,7 @@ import ListReservations from "./components/ListReservations";
 import Reservation from "./components/Reservation";
 import MenuSelection from './components/MenuSelection';
 import ReservedMenuPage from './components/ReservedMenuPage';
+import Restaurant from './components/restaurant';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <Route path="/signup" element={<SignUp/>}/>
       <Route path="/home" element={<Home/>}/>
       <Route path="/getdata" element={<Getdata/>}/>
+      <Route path="/restaurant" element={<Restaurant/>}/>
       <Route path="/createReservation" element={<ReservationForm/>}/>
       <Route path="/reservations" element={<ListReservations/>}/>
       <Route path="/reservation" element={<Reservation/>}/>
