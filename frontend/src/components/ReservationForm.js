@@ -1,16 +1,13 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { firebase } from 'firebase/app';
-import { Timestamp } from 'firebase/firestore';
-import {useLocation, useNavigate} from 'react-router-dom';
+// import {useLocation} from 'react-router-dom';
 // import {createReservation} from "../services/ReservationService";
 const ReservationService = require("../services/ReservationService");
 function ReservationForm() {
-    const location = useLocation();
-    const searchParams = new URLSearchParams(location.search);
+    // const location = useLocation();
+    // const searchParams = new URLSearchParams(location.search);
     // const data = reservationService();
     // Access query parameters
-    const paramValue = searchParams.get('paramName');
+    // const paramValue = searchParams.get('paramName');
     // const navigate = useNavigation();
     // navigate("/", {state: {data})
     // const location = useLocation()

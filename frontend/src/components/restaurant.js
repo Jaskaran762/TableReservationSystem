@@ -2,12 +2,17 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import "./restaurant.css"; // Import your CSS file
+import { useNavigate } from 'react-router-dom';
 
 function Restaurant() {
+  const navigate = useNavigate();
+  const navigateToMenuReservation = () => {
+    navigate('/menu-selection');
+  };
   const [restaurantInfo, setRestaurantInfo] = useState({});
   const [menu, setMenu] = useState([]);
   const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // const [setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const location = useLocation();
@@ -19,7 +24,7 @@ function Restaurant() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);
+        // setLoading(true);
 
         const infoEndpoint =
           "https://4nghc9vm23.execute-api.us-east-1.amazonaws.com/dev/get-data-restaurant";
@@ -46,7 +51,7 @@ function Restaurant() {
       } catch (error) {
         setError(error);
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     };
 
@@ -80,8 +85,10 @@ function Restaurant() {
         {menu?.map((menuItem, index) => (
           <div key={index} className="card">
             <p>Name: {menuItem.name}</p>
+            <button onClick={navigateToMenuReservation}>
             <img src={menuItem.image} alt={`Item ${index}`} />
-          </div>
+            </button>          
+            </div>
         ))}
       </div>
 

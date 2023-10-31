@@ -9,7 +9,7 @@ function ReservationDetail() {
             console.log("fetch->"+data);
             setReservation(data);
         });
-    }, []);
+    }, [reservationId]);
     return (
         <div>
             <h1>Reservation Details</h1>
