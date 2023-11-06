@@ -5,6 +5,8 @@ import Landing from "../view/Landing/landing";
 import Home from "../home";
 import {Navigate, Route, Routes} from "react-router-dom";
 import SignUp from "../signup";
+import Dashboard from "../dashboard/dashboard";
+import ListReservations from "../ListReservations";
 const Router = ()=> {
     const isAuth = useSelector(selectUser);
     // console.log("is Auth ->"+ isAuth);
@@ -12,12 +14,14 @@ const Router = ()=> {
         <>
             <Routes>
                 <Route>
-                    <Route path='/login' element={isAuth ? <Navigate to="/home" /> : <Auth />}/>
+                    <Route path='/login' element={isAuth ? <Navigate to="/dashboard" /> : <Auth />}/>
                     <Route path="/signup" element={<SignUp/>}/>
                 </Route>
                 <Route path='/' element={<Landing/>}>
-                    <Route path="/" element={ isAuth ? <Navigate to="/home" /> : <Navigate to="/error" />}/>
-                    <Route path='/home' element={<Home/>} />
+                    <Route path="/" element={ isAuth ? <Navigate to="/dashboard" /> : <Navigate to="/" />}/>
+                    <Route path='/dashboard' element={<Dashboard/>} />
+                    <Route path='/restaurants' element={<Home/>} />
+                    <Route path='/reservations' element={<ListReservations/>} />
                 </Route>
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>

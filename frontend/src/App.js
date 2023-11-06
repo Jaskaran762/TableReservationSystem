@@ -10,23 +10,30 @@ import Reservation from "./components/Reservation";
 import PageRoutes from './components/routes/routes';
 import {Container} from "react-bootstrap";
 import Header from "./components/headers/headers";
+import MenuSelection from './components/MenuSelection';
+import ReservedMenuPage from './components/ReservedMenuPage';
+import Restaurant from './components/restaurant';
 
 function App() {
-    // <Router>
-    // <div className='App'>
-    // <Routes>
-
-    // {/*<Route path="/" element={<Auth/>} />*/}
-    // {/*<Route path="/signup" element={<SignUp/>}/>*/}
-    // {/*<Route path="/home" element={<Home/>}/>*/}
-    // {/*<Route path="/getdata" element={<Getdata/>}/>*/}
-    // {/*<Route path="/createReservation" element={<ReservationForm/>}/>*/}
-    // {/*<Route path="/reservations" element={<ListReservations/>}/>*/}
-    // {/*    <Route path="/reservation" element={<Reservation/>}/>*/}
-    // {/*</Routes>*/}
-    // </div>
-    // </Router>
   return (
+      // <Router>
+      // <div className='App'>
+      // <Routes>
+      //
+      // <Route path="/" element={<Auth/>} />
+      // <Route path="/signup" element={<SignUp/>}/>
+      // <Route path="/home" element={<Home/>}/>
+      // <Route path="/getdata" element={<Getdata/>}/>
+      // <Route path="/restaurant" element={<Restaurant/>}/>
+      // <Route path="/createReservation" element={<ReservationForm/>}/>
+      // <Route path="/reservations" element={<ListReservations/>}/>
+      // <Route path="/reservation" element={<Reservation/>}/>
+      // <Route path="/menu-selection" element={<MenuSelection/>} />
+      // <Route path="/reserved-menu" element={<ReservedMenuPage/>} />
+      // </Routes>
+      // </div>
+      // </Router>
+ 
       // <div className='App' >
           <Router>
               <Container style={{maxWidth:'100vm',padding:0}}>
