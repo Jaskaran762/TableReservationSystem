@@ -1,90 +1,90 @@
 /* home.css */
 
-body {
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
+/*body {*/
+/*    margin: 0;*/
+/*    font-family: 'Arial', sans-serif;*/
+/*    background-color: #f4f4f4;*/
 
-  }
-  
-  .container {
-    display: flex;
-    margin: 20px;
-    width: 100%;
-  }
-  
-  .sidebar {
-    width: 25%;
-    padding: 20px;
-    background-color: #333;
-    color: #fff;
-  }
-  
-  .sidebar h1 {
-    font-size: 24px;
-  }
-  
-  .sidebar form {
-    margin-top: 20px;
-  }
-  
-  .sidebar label {
-    display: block;
-    margin-bottom: 5px;
-    color: #ccc;
-  }
-  
-  .sidebar input {
-    width: 90%;
-    padding: 8px;
-    margin-bottom: 15px;
-  }
-  
-  .sidebar button {
-    background-color: #4caf50;
-    color: #fff;
-    padding: 10px 15px;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .sidebar button:hover {
-    background-color: #45a049;
-  }
-  
-  .content {
-    flex: 1;
-    padding: 20px;
-    background-color: #fff;
-  }
-  
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  li {
-    margin-bottom: 20px;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 15px;
-  }
-  
-  li img {
-    margin-right: 15px;
-  }
-  
-  li div {
-    margin-bottom: 8px;
-  }
-  
-  /* Responsive styles */
-  @media screen and (max-width: 768px) {
-    .container {
-      flex-direction: column;
-    }
-  
-    .sidebar {
-      width: 100%;
-    }
-  }
-  
+/*  }*/
+/*  */
+/*  .container {*/
+/*    display: flex;*/
+/*    margin: 20px;*/
+/*    width: 100%;*/
+/*  }*/
+/*  */
+/*  .sidebar {*/
+/*    width: 25%;*/
+/*    padding: 20px;*/
+/*    background-color: #333;*/
+/*    color: #fff;*/
+/*  }*/
+/*  */
+/*  .sidebar h1 {*/
+/*    font-size: 24px;*/
+/*  }*/
+/*  */
+/*  .sidebar form {*/
+/*    margin-top: 20px;*/
+/*  }*/
+/*  */
+/*  .sidebar label {*/
+/*    display: block;*/
+/*    margin-bottom: 5px;*/
+/*    color: #ccc;*/
+/*  }*/
+/*  */
+/*  .sidebar input {*/
+/*    width: 90%;*/
+/*    padding: 8px;*/
+/*    margin-bottom: 15px;*/
+/*  }*/
+/*  */
+/*  .sidebar button {*/
+/*    background-color: #4caf50;*/
+/*    color: #fff;*/
+/*    padding: 10px 15px;*/
+/*    border: none;*/
+/*    cursor: pointer;*/
+/*  }*/
+/*  */
+/*  .sidebar button:hover {*/
+/*    background-color: #45a049;*/
+/*  }*/
+/*  */
+/*  .content {*/
+/*    flex: 1;*/
+/*    padding: 20px;*/
+/*    background-color: #fff;*/
+/*  }*/
+/*  */
+/*  ul {*/
+/*    list-style: none;*/
+/*    padding: 0;*/
+/*  }*/
+/*  */
+/*  li {*/
+/*    margin-bottom: 20px;*/
+/*    border-bottom: 1px solid #ddd;*/
+/*    padding-bottom: 15px;*/
+/*  }*/
+/*  */
+/*  li img {*/
+/*    margin-right: 15px;*/
+/*  }*/
+/*  */
+/*  li div {*/
+/*    margin-bottom: 8px;*/
+/*  }*/
+/*  */
+/*  !* Responsive styles *!*/
+/*  @media screen and (max-width: 768px) {*/
+/*    .container {*/
+/*      flex-direction: column;*/
+/*    }*/
+/*  */
+/*    .sidebar {*/
+/*      width: 100%;*/
+/*    }*/
+/*  }*/
+/**/

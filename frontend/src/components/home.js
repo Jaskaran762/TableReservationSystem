@@ -3,6 +3,7 @@ import axios from 'axios';
 import './home.css';
 
 function Home() {
+  console.log("! in Home Component");
   const [city, setCity] = useState('');
   const [name, setName] = useState('');
   const [rating, setRating] = useState('');
@@ -47,6 +48,7 @@ function Home() {
   };
 
   return (
+      <>
     <div className="container">
       <div className="sidebar">
         <h1>Restaurant Search</h1>
@@ -83,6 +85,7 @@ function Home() {
         </ul>
       </div>
     </div>
+      </>
   );
 }
 

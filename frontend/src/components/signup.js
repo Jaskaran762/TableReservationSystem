@@ -31,16 +31,16 @@ function SignUp(){
       };
 
       return (
-        <div className="form-container">
-          <input placeholder="Name.." onChange={(e) => setName(e.target.value)} />
-          <input placeholder="Email.." onChange={(e) => setEmail(e.target.value)} />
-          <input
-            type="password"
-            placeholder="Password.."
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button onClick={signUpHandle}>Sign Up</button>
-        </div>
+          <div className="form-container">
+              <input placeholder="Name.." onChange={(e) => setName(e.target.value)} />
+              <input placeholder="Email.." onChange={(e) => setEmail(e.target.value)} />
+              <input
+                  type="password"
+                  placeholder="Password.."
+                  onChange={(e) => setPassword(e.target.value)}
+              />
+              <button onClick={signUpHandle}>Sign Up</button>
+          </div>
       );
 }
 
