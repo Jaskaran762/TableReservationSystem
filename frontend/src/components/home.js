@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./home.css";
 import Nav from "react-bootstrap/Nav";
 import Card from "react-bootstrap/Card";
+import Form from "react-bootstrap/Form";
 
 function Home() {
   console.log("! in Home Component");
@@ -61,13 +62,13 @@ function Home() {
     <>
       <div className="container">
         <div className="sidebar">
-          <h1>Restaurant Search</h1>
+          <h2>Restaurant Search</h2>
           <form onSubmit={handleSubmit}>
             <Nav variant="tabs" defaultActiveKey="/home">
               <Nav.Item>
                 <div>
-                  <label>Name: </label>
                   <input
+                    placeholder="Restaurant name"
                     type="text"
                     value={name}
                     onChange={(e) => {
@@ -79,11 +80,9 @@ function Home() {
                     disabled={city !== "" || rating !== ""}
                   />
                 </div>
-              </Nav.Item>
-              <Nav.Item>
-                <div>
-                  <label>City: </label>
+                <div style={{ display: "inline-block" }}>
                   <input
+                    placeholder="City"
                     type="text"
                     value={city}
                     onChange={(e) => {
@@ -95,12 +94,8 @@ function Home() {
                     }}
                     disabled={name !== ""}
                   />
-                </div>
-              </Nav.Item>
-              <Nav.Item>
-                <div>
-                  <label>Rating (Min): </label>
                   <input
+                    placeholder="Rating (Min)"
                     type="number"
                     value={rating}
                     onChange={(e) => {
@@ -114,7 +109,6 @@ function Home() {
                   />
                 </div>
               </Nav.Item>
-
               <button type="submit">Search</button>
             </Nav>
           </form>
@@ -122,7 +116,7 @@ function Home() {
           {error && <div>Error: {error.message}</div>}
         </div>
         <div className="content">
-          <span style={{ display: "inline-block" }}>
+          <span style={{ display: "inline-block", cursor: "pointer"}}>
             {restaurants.map((restaurant) => (
               <Card
                 key={restaurant.name}
