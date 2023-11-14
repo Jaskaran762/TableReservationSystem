@@ -3,6 +3,7 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 import "./restaurant.css"; // Import your CSS file
 import { useNavigate } from 'react-router-dom';
+import Nav from 'react-bootstrap/Nav';
 
 function Restaurant() {
   const navigate = useNavigate();
