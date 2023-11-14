@@ -3,16 +3,30 @@ import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import { logout, selectUser } from '../redux/userSlice';
 import { useNavigate } from 'react-router-dom';
+import {signOut} from "firebase/auth";
+import {auth} from "../../config/firebase";
 
 const Header = () => {
     const isAuth = useSelector(selectUser);
+    console.log(isAuth);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const logOut = async () => {
+        try {
+            await signOut(auth);
+        } catch (err){
+            console.error(err);
+        }
+    };
     const handleSignOut = () => {
-        dispatch(logout());
-        localStorage.removeItem('token');
-        navigate('/');
+        console.log("Handle Signout called!");
+        logOut().then(
+            ()=>{
+                dispatch(logout());
+                navigate('/');
+            }
+        )
     }
 
     return (

@@ -1,10 +1,10 @@
 import { admin ,auth , googleProvider, db} from "../../config/firebase";
-import { signInWithEmailAndPassword,signInWithPopup } from "firebase/auth";
+import {signInWithEmailAndPassword, signInWithPopup, signOut} from "firebase/auth";
 import { setDoc, doc } from 'firebase/firestore';
 import { useState } from "react";
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import {login} from "../redux/userSlice";
+import {login, setUserDetails} from "../redux/userSlice";
 import {useDispatch} from "react-redux";
 import 'bootstrap/dist/css/bootstrap.css';
 import {Button, ButtonGroup, Form} from "react-bootstrap";
@@ -27,6 +27,15 @@ function Auth(){
             })
         )
     }
+    const dispatchUserDetails = (userDetails) =>{
+        console.log("calling fetch userDetails!");
+        dispatch(
+            setUserDetails({
+                user: userDetails
+            })
+        )
+    }
+
     // const checkUserExist = (userId)=>{
     //     return collection.doc(userId)
     //         .get()
@@ -43,6 +52,7 @@ function Auth(){
     });
         var user = details.user;
         console.log(JSON.stringify(user));
+        dispatchUserDetails(user);
         // console.log(checkUserExist(user.uid));
         // if(!checkUserExist(user.uid)){
         //     await setDoc(doc(db,"users",user.uid),{
@@ -71,6 +81,7 @@ function Auth(){
     });
     var user = details.user;
         console.log(JSON.stringify(user));
+        dispatchUserDetails(user);
         // if(!checkUserExist(user.uid)){
         //     await setDoc(doc(db,"users",user.uid),{
         //             email:user.email,
