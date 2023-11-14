@@ -1,14 +1,16 @@
 import { Container, Navbar, Nav } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
-import { logout, selectUser } from '../redux/userSlice';
+import {logout, selectLoginType, selectUser} from '../redux/userSlice';
 import { useNavigate } from 'react-router-dom';
 import {signOut} from "firebase/auth";
 import {auth} from "../../config/firebase";
 
 const Header = () => {
     const isAuth = useSelector(selectUser);
+    const loginTypeSelector = useSelector(selectLoginType);
     console.log(isAuth);
+    console.log("LoginType=>"+loginTypeSelector);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -28,13 +30,23 @@ const Header = () => {
             }
         )
     }
+    const getAppType = ()=>{
+        console.log(JSON.stringify(loginTypeSelector));
+        if(loginTypeSelector?.loginType === "CUSTOMER"){
+            return "(Customer App)";
+        }else if(loginTypeSelector?.loginType === "PARTNER"){
+            return "(Partner App)";
+        }else{
+            return "";
+        }
+    }
 
     return (
         <header>
             <Navbar bg="dark" variant="dark" expand="lg" >
                 <Container className=''>
                     <LinkContainer to='/'>
-                        <Navbar.Brand >Rest Explore</Navbar.Brand>
+                        <Navbar.Brand >Rest Explore { getAppType() } </Navbar.Brand>
                     </LinkContainer>
 
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />

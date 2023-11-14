@@ -7,7 +7,8 @@ export const userSlice = createSlice({
     name: "user",
     initialState: {
         token: null,
-        user: null
+        user: null,
+        loginType: null
     },
     reducers: {
         login: (state, action) => {
@@ -16,17 +17,22 @@ export const userSlice = createSlice({
         },setUserDetails:(state,action)=>{
             console.log("Setting up User details;");
             state.user = action.payload;
+        },setUserLoginType:(state,action)=>{
+            console.log("Setting up Login Type;");
+            state.loginType = action.payload
         },
         logout: (state) => {
             state.user = null;
             state.token = null;
+            state.loginType = null;
         }
     }
 });
 
-export const { login, logout ,setUserDetails} = userSlice.actions;
+export const { login, logout ,setUserDetails,setUserLoginType} = userSlice.actions;
 
 export const selectUserToken = (state) => state.token;
 export const selectUser = (state) => state.user;
+export const selectLoginType = (state) => state.loginType;
 
 export default userSlice.reducer;

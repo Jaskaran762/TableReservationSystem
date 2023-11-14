@@ -4,7 +4,7 @@ import { setDoc, doc } from 'firebase/firestore';
 import { useState } from "react";
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import {login, setUserDetails} from "../redux/userSlice";
+import {login, setUserLoginType, setUserDetails} from "../redux/userSlice";
 import {useDispatch} from "react-redux";
 import 'bootstrap/dist/css/bootstrap.css';
 import {Button, ButtonGroup, Form} from "react-bootstrap";
@@ -14,6 +14,7 @@ function Auth(){
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
+    const [loginType, setLoginType] = useState("CUSTOMER");
 
   console.log(auth?.currentUser?.email);
     var details
@@ -35,6 +36,14 @@ function Auth(){
             })
         )
     }
+    const dispatchLoginType = (loginType)=>{
+        console.log("LoginType -> "+loginType)
+        dispatch(
+            setUserLoginType({
+                loginType: loginType
+            })
+        )
+    }
 
     // const checkUserExist = (userId)=>{
     //     return collection.doc(userId)
@@ -53,6 +62,7 @@ function Auth(){
         var user = details.user;
         console.log(JSON.stringify(user));
         dispatchUserDetails(user);
+        dispatchLoginType(loginType);
         // console.log(checkUserExist(user.uid));
         // if(!checkUserExist(user.uid)){
         //     await setDoc(doc(db,"users",user.uid),{
@@ -82,6 +92,7 @@ function Auth(){
     var user = details.user;
         console.log(JSON.stringify(user));
         dispatchUserDetails(user);
+        dispatchLoginType(loginType);
         // if(!checkUserExist(user.uid)){
         //     await setDoc(doc(db,"users",user.uid),{
         //             email:user.email,
@@ -119,6 +130,13 @@ function Auth(){
           <Form.Group className="mb-3" controlId="formBasicPassword" >
               <Form.Label>Password:</Form.Label>
               <Form.Control type='password'  onChange={(e) => setPassword(e.target.value)} placeholder="Password" ></Form.Control>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formBasicLoginType">
+              <Form.Label>Login Type:</Form.Label>
+              <Form.Select onChange={(e) => setLoginType(e.target.value)}>
+                  <option value="CUSTOMER">Customer</option>
+                  <option value="PARTNER">Partner</option>
+              </Form.Select>
           </Form.Group>
           <Form.Group>
               <ButtonGroup>
