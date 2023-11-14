@@ -6,7 +6,8 @@ import Home from "../home";
 import {Navigate, Route, Routes} from "react-router-dom";
 import SignUp from "../signup";
 import Dashboard from "../dashboard/dashboard";
-import ListReservations from "../ListReservations";
+import ListReservations from "../view/Reservations/ListReservations";
+import ReservationForm from "../view/Reservations/ReservationForm";
 const Router = ()=> {
     const isAuth = useSelector(selectUser);
     // console.log("is Auth ->"+ isAuth);
@@ -22,6 +23,7 @@ const Router = ()=> {
                     <Route path='/dashboard' element={<Dashboard/>} />
                     <Route path='/restaurants' element={<Home/>} />
                     <Route path='/reservations' element={<ListReservations/>} />
+                    <Route path='/restaurants/:restaurantId/createReservation' element={<ReservationForm/>}/>
                 </Route>
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>

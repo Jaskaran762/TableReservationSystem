@@ -9,6 +9,7 @@ import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
 import com.amazonaws.services.secretsmanager.model.GetSecretValueRequest;
 import com.amazonaws.services.secretsmanager.model.GetSecretValueResult;
+import com.example.reservationservice.dto.ReservationDTO;
 import com.example.reservationservice.entity.Reservation;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -42,8 +43,9 @@ public class GetReservations implements RequestHandler<APIGatewayProxyRequestEve
 
         Map<String,String> queryParams = apiGatewayProxyRequestEvent.getQueryStringParameters();
         try {
-            if(queryParams !=null )
-            logger.log(queryParams.toString());
+            if(queryParams !=null ) {
+                logger.log(queryParams.toString());
+            }
 
             responseEvent.setBody(getGson().toJson(getReservationsBasedOnCondition(queryParams,logger)));
             responseEvent.setStatusCode(200);
@@ -55,16 +57,16 @@ public class GetReservations implements RequestHandler<APIGatewayProxyRequestEve
         responseEvent.setHeaders(headers);
         return responseEvent;
     }
-    public List<Reservation> getReservationsBasedOnCondition(Map<String,String> queryParams,LambdaLogger logger)
+    public List<ReservationDTO> getReservationsBasedOnCondition(Map<String,String> queryParams,LambdaLogger logger)
             throws Exception {
-        List<Reservation> reservations = new LinkedList<>();
+        List<ReservationDTO> reservations = new LinkedList<>();
         Firestore firestore = FirestoreClient.getFirestore();
         CollectionReference collectionRef = firestore.collection(COLLECTION_NAME);
         Query query = null;
         if(queryParams!=null){
             String date = queryParams.get("date");
             String restaurantId = queryParams.get("restaurantId");
-            String uid = queryParams.get("uid");
+            String userId = queryParams.get("userId");
             logger.log(queryParams.toString());
             logger.log(queryParams.getOrDefault("isAcceptedByRestaurant",null));
             if(date != null && !date.equals("")){
@@ -77,11 +79,11 @@ public class GetReservations implements RequestHandler<APIGatewayProxyRequestEve
                     query = collectionRef.whereEqualTo("restaurantId",restaurantId);
                 }
             }
-            if(uid != null && !uid.equals("")){
+            if(userId != null && !userId.equals("")){
                 if(query != null){
-                    query = query.whereEqualTo("uid",uid);
+                    query = query.whereEqualTo("userId",userId);
                 }else{
-                    query = collectionRef.whereEqualTo("uid",uid);
+                    query = collectionRef.whereEqualTo("userId",userId);
                 }
             }
             if(queryParams.getOrDefault("isAcceptedByRestaurant",null) != null){
@@ -96,8 +98,9 @@ public class GetReservations implements RequestHandler<APIGatewayProxyRequestEve
         }
         ApiFuture<QuerySnapshot> querySnapshotApiFuture = query != null ? query.get() : collectionRef.get();
         for (QueryDocumentSnapshot document : querySnapshotApiFuture.get().getDocuments()) {
-            Reservation reservation = document.toObject(Reservation.class);
+            ReservationDTO reservation = document.toObject(ReservationDTO.class);
             System.out.println("Reservation->"+reservation);
+            reservation.setDocumentId(document.getId());
             reservations.add(reservation);
         }
         return reservations;

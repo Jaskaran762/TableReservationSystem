@@ -4,8 +4,8 @@ import Auth from './components/auth/login'
 import SignUp from './components/signup';
 import Home from './components/home';
 import Getdata from './components/getdata';
-import ReservationForm from './components/ReservationForm';
-import ListReservations from "./components/ListReservations";
+import ReservationForm from './components/view/Reservations/ReservationForm';
+import ListReservations from "./components/view/Reservations/ListReservations";
 import Reservation from "./components/Reservation";
 import PageRoutes from './components/routes/routes';
 import {Container} from "react-bootstrap";
