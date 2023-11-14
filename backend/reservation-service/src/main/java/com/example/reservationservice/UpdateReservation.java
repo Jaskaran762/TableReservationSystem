@@ -28,7 +28,9 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.chrono.ChronoZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class UpdateReservation implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
     final public static String COLLECTION_NAME = "reservations";
@@ -43,8 +45,8 @@ public class UpdateReservation implements RequestHandler<APIGatewayProxyRequestE
         Gson gson = getGson();
         Reservation reservation = gson.fromJson(requestBody, Reservation.class);
         logger.log("Reservation=>"+reservation);
-        logger.log("allowedToChange(reservation.getStartTime().getSeconds())->"+allowedToChange(reservation.getStartTime().getSeconds()));
-    if (allowedToChange(reservation.getStartTime().getSeconds())){
+        logger.log("allowedToChange(reservation.getStartTime().getSeconds())->"+allowedToChange(reservation.getDate(),reservation.getTimeSlot().getStart()));
+    if (allowedToChange(reservation.getDate(),reservation.getTimeSlot().getStart())){
         String documentId = apiGatewayProxyRequestEvent.getPathParameters().get("documentId");
         logger.log("Document ID -> "+ documentId +" is being changed!");
         initialisation(logger);
@@ -63,13 +65,17 @@ public class UpdateReservation implements RequestHandler<APIGatewayProxyRequestE
 
         return responseEvent;
     }
-    public boolean allowedToChange(long seconds){
-        Instant startTime = Instant.ofEpochSecond(seconds).minusSeconds(3600);
-        System.out.println("Start Time->"+startTime);
-        LocalDateTime currentTime = LocalDateTime.now();
-        System.out.println("currentTime->"+ currentTime);
-        System.out.println(currentTime.isBefore(ChronoZonedDateTime.from(startTime.atZone(ZoneId.systemDefault())).toLocalDateTime()));
-        return currentTime.isBefore(ChronoZonedDateTime.from(startTime.atZone(ZoneId.systemDefault())).toLocalDateTime());
+    public boolean allowedToChange(String date, String time) {
+        String dateTimeString = date + " " + time;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime bookingDateTime = LocalDateTime.parse(dateTimeString, formatter);
+        ZonedDateTime bookingZonedDateTime = ZonedDateTime.of(bookingDateTime, ZoneId.of("America/Halifax"));
+
+        ZonedDateTime oneHourBeforeBooking = bookingZonedDateTime.minusHours(1);
+
+        ZonedDateTime currentZonedDateTime = ZonedDateTime.now(ZoneId.of("America/Halifax"));
+
+        return currentZonedDateTime.isBefore(oneHourBeforeBooking);
     }
     public void initialisation(LambdaLogger logger){
         if(FirebaseApp.getApps().size() <= 0){

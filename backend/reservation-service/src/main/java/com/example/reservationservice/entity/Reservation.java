@@ -14,8 +14,10 @@ public class Reservation {
     String userId;
     String restaurantId;
     String date;
-    Timestamp startTime;
-    Timestamp endTime;
+    String tableName;
+    TimeSlot timeSlot;
+//    Timestamp startTime;
+//    Timestamp endTime;
     boolean isAcceptedByRestaurant;
     Integer numberOfPerson;
     boolean isDeleted;
