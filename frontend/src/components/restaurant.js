@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import "./restaurant.css"; // Import your CSS file
-import { useNavigate } from 'react-router-dom';
-import Nav from 'react-bootstrap/Nav';
+import { useNavigate } from "react-router-dom";
+import Nav from "react-bootstrap/Nav";
+import { useSelector } from "react-redux";
+import { selectUser } from "./redux/userSlice";
 
 function Restaurant() {
   const navigate = useNavigate();
   const navigateToMenuReservation = () => {
-    navigate('/menu-selection');
+    navigate("/menu-selection");
   };
   const [restaurantInfo, setRestaurantInfo] = useState({});
   const [menu, setMenu] = useState([]);
@@ -42,8 +44,8 @@ function Restaurant() {
           ]
         );
 
-        console.log(menuResponse);
-        setRestaurantInfo(infoResponse.data);
+        console.log(infoResponse);
+        setRestaurantInfo(infoResponse.data?.restaurants);
         //alert(JSON.stringify(menuResponse.data?.menus));
         setMenu(menuResponse.data?.menus);
         setReviews(reviewsResponse.data?.reviews || []);
@@ -59,16 +61,19 @@ function Restaurant() {
     fetchData();
   }, [restaurantName]);
 
-  const handleAddReview = async (newReview) => {
+  const user = useSelector(selectUser);
+  const username = user.user.displayName;
+  const handleAddReview = async (newReview, newRating) => {
     try {
       const addReviewEndpoint =
         "https://ch0bs0q5ek.execute-api.us-east-1.amazonaws.com/dev/add-review-restaurant";
       await axios.post(addReviewEndpoint, {
         name: restaurantName,
         description: newReview,
-        rating: "3",
-        author: "Omm",
+        rating: newRating,
+        author: username,
       });
+      alert("Review added successfully");
       // After adding the review, fetch the updated reviews
     } catch (error) {
       setError(error);
@@ -77,19 +82,19 @@ function Restaurant() {
 
   return (
     <div>
-      <h1>{restaurantInfo.name}</h1>
-      <p>Location: {restaurantInfo.location}</p>
-      <p>Rating: {restaurantInfo.rating}</p>
-
+      <h2>{restaurantInfo[0].name}</h2>
+      <img src={restaurantInfo[0].photo}></img>
+      <p>Location: {restaurantInfo[0].location}</p>
+      <p>City: {restaurantInfo[0].city}</p>
       <h2>Menu</h2>
       <div className="card-container">
         {menu?.map((menuItem, index) => (
           <div key={index} className="card">
             <p>Name: {menuItem.name}</p>
             <button onClick={navigateToMenuReservation}>
-            <img src={menuItem.image} alt={`Item ${index}`} />
-            </button>          
-            </div>
+              <img src={menuItem.image} alt={`Item ${index}`} />
+            </button>
+          </div>
         ))}
       </div>
 
@@ -109,8 +114,9 @@ function Restaurant() {
         onSubmit={(e) => {
           e.preventDefault();
           const newReview = e.target.elements.review.value;
+          const newRating = e.target.elements.rating.value;
           if (newReview.trim() !== "") {
-            handleAddReview(newReview);
+            handleAddReview(newReview,newRating);
           }
         }}
       >
@@ -121,6 +127,15 @@ function Restaurant() {
           placeholder="Write your review..."
         />
         <br />
+        <label for="numberDropdown">Rating:</label>
+        <select id="numberDropdown" name="rating">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+        <br /><br />
         <button type="submit">Submit Review</button>
       </form>
 

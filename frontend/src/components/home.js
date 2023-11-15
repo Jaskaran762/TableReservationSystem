@@ -38,16 +38,27 @@ function Home() {
 
     const apiEndpoint =
       "https://4nghc9vm23.execute-api.us-east-1.amazonaws.com/dev/get-data-restaurant";
-    const requestBody = {
-      city: city,
-      rating: rating,
-    };
-
+    const requestBody = {};
+    if (name && name.length != 0) {
+      requestBody.name = name;
+    }
+    if(city && city.length != 0){
+      requestBody.city = city;
+    }
+    if(rating && rating.length != 0){
+      requestBody.rating = parseInt(rating);
+    }
     try {
       const response = await axios.post(apiEndpoint, requestBody);
 
       const receivedRestaurants = response.data.restaurants || [];
       setRestaurants(receivedRestaurants);
+      if(receivedRestaurants.length == 0){
+        throw new Error("No restaurant found");
+      }
+      else{
+        setError(null);
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
       setError(error);
@@ -116,7 +127,7 @@ function Home() {
           {error && <div>Error: {error.message}</div>}
         </div>
         <div className="content">
-          <span style={{ display: "inline-block", cursor: "pointer"}}>
+          <span style={{ display: "inline-block", cursor: "pointer" }}>
             {restaurants.map((restaurant) => (
               <Card
                 key={restaurant.name}

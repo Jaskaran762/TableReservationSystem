@@ -4,14 +4,14 @@ const dynamoDB = new AWS.DynamoDB.DocumentClient({ region: 'us-east-1' });
 const lambda = new AWS.Lambda();
 
 exports.handler = async (event, context) => {
-  // Example input JSON
-  console.log(event);
-  const inputJson = JSON.parse(event.body);
-  console.log(inputJson);
-  // DynamoDB Query parameters
-  const params = {
-    TableName: 'Restaurant',
-  };
+    // Example input JSON
+    console.log(event);
+    const inputJson = event;
+    console.log(inputJson);
+    // DynamoDB Query parameters
+    const params = {
+      TableName: 'Restaurant',
+    };
 
   // Check if 'name' is not null
   if (inputJson.name != null) {
@@ -52,11 +52,11 @@ exports.handler = async (event, context) => {
     }
 
     // Check and add 'rating' condition
-    if (inputJson.rating != null) {
+    if (!isNaN(inputJson.rating)) {
       if (params.FilterExpression != '') {
         params.FilterExpression += ' AND '; // Add AND if 'city' condition exists
       }
-      params.FilterExpression += '#resRating = :ratingValue';
+      params.FilterExpression += '#resRating >= :ratingValue';
       params.ExpressionAttributeNames = {
         ...params.ExpressionAttributeNames,
         '#resRating': 'resRating', // Assuming 'rating' is the attribute name in DynamoDB
@@ -92,9 +92,9 @@ exports.handler = async (event, context) => {
     resRating: item.resRating
     }));
     console.log(newArray);
-    return { statusCode: 200, body: JSON.stringify(newArray)};
+    return { restaurants: newArray};
   } catch (err) {
     console.error('Error retrieving items from DynamoDB:', err);
-    return { statusCode: 500, body: `Error retrieving items from DynamoDB: ${err.message}` };
+    return { restaurants: `Error retrieving items from DynamoDB: ${err.message}` };
   }
 };
