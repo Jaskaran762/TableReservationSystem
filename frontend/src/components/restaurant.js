@@ -13,6 +13,7 @@ function Restaurant() {
     navigate("/menu-selection");
   };
   const [restaurantInfo, setRestaurantInfo] = useState({});
+  const [res, setRes] = useState({});
   const [menu, setMenu] = useState([]);
   const [reviews, setReviews] = useState([]);
   // const [setLoading] = useState(true);
@@ -46,6 +47,7 @@ function Restaurant() {
 
         console.log(infoResponse);
         setRestaurantInfo(infoResponse.data?.restaurants);
+        setRes(infoResponse.data?.restaurants[0] || {}); 
         //alert(JSON.stringify(menuResponse.data?.menus));
         setMenu(menuResponse.data?.menus);
         setReviews(reviewsResponse.data?.reviews || []);
@@ -82,10 +84,14 @@ function Restaurant() {
 
   return (
     <div>
-      <h2>{restaurantInfo[0].name}</h2>
-      <img src={restaurantInfo[0].photo}></img>
-      <p>Location: {restaurantInfo[0].location}</p>
-      <p>City: {restaurantInfo[0].city}</p>
+      {res && (
+        <div>
+          <h2>{res.name}</h2>
+          <img src={res.photo} alt={`${res.name} Photo`} />
+          <p>Location: {res.location}</p>
+          <p>City: {res.city}</p>
+        </div>
+      )}
       <h2>Menu</h2>
       <div className="card-container">
         {menu?.map((menuItem, index) => (
