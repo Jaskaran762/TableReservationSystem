@@ -19,7 +19,7 @@ import {
   Card,
   ToggleButtonGroup as RBToggleButtonGroup,
   ToggleButton as RBToggleButton,
-  Modal
+  Modal,
 } from "react-bootstrap";
 
 function RestaurantAdmin() {
@@ -51,7 +51,17 @@ function RestaurantAdmin() {
   const [showFoodMenu, setShowFoodMenu] = useState(true);
   const [showTables, setShowTables] = useState(true);
   const [showAddFoodModal, setShowAddFoodModal] = useState(false);
-  const [newFoodItem, setNewFoodItem] = useState({ name: '', price: '', description: '', category: '' });
+  const [showAddTableModal, setShowAddTableModal] = useState(false);
+  const [newFoodItem, setNewFoodItem] = useState({
+    name: "",
+    price: "",
+    description: "",
+    category: "",
+  });
+  const [newTable, setNewTable] = useState({
+    tableSize: "",
+    numberOfTables: "",
+  });
 
   useEffect(() => {
     axios
@@ -123,7 +133,7 @@ function RestaurantAdmin() {
         price: newFoodItem.price,
         category: newFoodItem.category,
         description: newFoodItem.description,
-        menu_id: restaurantData.menuList.length
+        menu_id: restaurantData.menuList.length,
       };
 
       // Update the menu list
@@ -135,7 +145,7 @@ function RestaurantAdmin() {
       const operation = {
         id: id,
         operation: "menu",
-        menuList: [...restaurantData.menuList, newItem]
+        menuList: [...restaurantData.menuList, newItem],
       };
       axios
         .post(
@@ -143,12 +153,58 @@ function RestaurantAdmin() {
           operation
         )
         .then(() => {
-            handleCloseAddFoodModal();
+          handleCloseAddFoodModal();
         });
-
     } else {
       // Handle invalid input
-      alert('Invalid input. Please enter a valid name and price.');
+      alert("Invalid input. Please enter a valid name and price.");
+    }
+  };
+
+  const handleShowAddTableModal = () => {
+    setShowAddTableModal(true);
+  };
+
+  const handleCloseAddTableModal = () => {
+    setShowAddTableModal(false);
+  };
+
+  const handleAddTableItem = () => {
+    // Validate input
+    if (!isNaN(newTable.tableSize) && !isNaN(newTable.numberOfTables)) {
+
+        restaurantData.noOfTables -= restaurantData.tables[newTable.tableSize]
+        restaurantData.noOfTables += parseInt(newTable.numberOfTables);
+      if (!(newTable.tableSize in restaurantData.tables)) {
+        // Key doesn't exist, so insert the key-value pair
+        restaurantData.tables[newTable.tableSize] = parseInt(newTable.numberOfTables);
+      } else {
+        // Key already exists, update the value
+        restaurantData.tables[newTable.tableSize] = parseInt(newTable.numberOfTables);
+      }
+
+      const tab = restaurantData.tables;
+      console.log(restaurantData.tables);
+      console.log(tab);
+
+      const operation = {
+        id: id,
+        operation: "table",
+        tables: tab,
+        noOfTables: restaurantData.noOfTables
+      };
+
+      axios
+        .post(
+          `https://4nghc9vm23.execute-api.us-east-1.amazonaws.com/dev//edit-partner-detail`,
+          operation
+        )
+        .then(() => {
+          handleCloseAddTableModal();
+        });
+    } else {
+      // Handle invalid input
+      alert("Invalid input. Please enter a valid input.");
     }
   };
 
@@ -266,89 +322,115 @@ function RestaurantAdmin() {
               )}
             </Tab>
             <Tab eventKey="foodMenu" title="Food Menu">
-            {showFoodMenu && (
-        <>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Item</th>
-                <th>Price</th>
-              </tr>
-            </thead>
-            <tbody>
-              {restaurantData.menuList.map((item, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{item.name}</td>
-                  <td>{item.price}</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-          
-          {/* Add button to trigger the addition of a new food item */}
-          <Button variant="primary" onClick={handleShowAddFoodModal}>
-            Add Food Item
-          </Button>
+              {showFoodMenu && (
+                <>
+                  <Table striped bordered hover>
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Item</th>
+                        <th>Price</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {restaurantData.menuList.map((item, index) => (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{item.name}</td>
+                          <td>{item.price}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
 
-          {/* Modal for adding a new food item */}
-          <Modal show={showAddFoodModal} onHide={handleCloseAddFoodModal}>
-            <Modal.Header closeButton>
-              <Modal.Title>Add Food Item</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Form>
-                <Form.Group controlId="formFoodItemName">
-                  <Form.Label>Item Name</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter item name"
-                    value={newFoodItem.name}
-                    onChange={(e) => setNewFoodItem({ ...newFoodItem, name: e.target.value })}
-                  />
-                </Form.Group>
-                <Form.Group controlId="formFoodItemPrice">
-                  <Form.Label>Item Price</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter item price"
-                    value={newFoodItem.price}
-                    onChange={(e) => setNewFoodItem({ ...newFoodItem, price: e.target.value })}
-                  />
-                </Form.Group>
-                <Form.Group controlId="formFoodItemDescription">
-                  <Form.Label>Item Description</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter item description"
-                    value={newFoodItem.description}
-                    onChange={(e) => setNewFoodItem({ ...newFoodItem, description: e.target.value })}
-                  />
-                </Form.Group>
-                <Form.Group controlId="formFoodItemCategory">
-                  <Form.Label>Item Category</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter item category"
-                    value={newFoodItem.category}
-                    onChange={(e) => setNewFoodItem({ ...newFoodItem, category: e.target.value })}
-                  />
-                </Form.Group>
-              </Form>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleCloseAddFoodModal}>
-                Close
-              </Button>
-              <Button variant="primary" onClick={handleAddFoodItem}>
-                Add Food Item
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        </>
-      )}
-    </Tab>
+                  {/* Add button to trigger the addition of a new food item */}
+                  <Button variant="primary" onClick={handleShowAddFoodModal}>
+                    Add Food Item
+                  </Button>
+
+                  {/* Modal for adding a new food item */}
+                  <Modal
+                    show={showAddFoodModal}
+                    onHide={handleCloseAddFoodModal}
+                  >
+                    <Modal.Header closeButton>
+                      <Modal.Title>Add Food Item</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <Form>
+                        <Form.Group controlId="formFoodItemName">
+                          <Form.Label>Item Name</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="Enter item name"
+                            value={newFoodItem.name}
+                            onChange={(e) =>
+                              setNewFoodItem({
+                                ...newFoodItem,
+                                name: e.target.value,
+                              })
+                            }
+                          />
+                        </Form.Group>
+                        <Form.Group controlId="formFoodItemPrice">
+                          <Form.Label>Item Price</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="Enter item price"
+                            value={newFoodItem.price}
+                            onChange={(e) =>
+                              setNewFoodItem({
+                                ...newFoodItem,
+                                price: e.target.value,
+                              })
+                            }
+                          />
+                        </Form.Group>
+                        <Form.Group controlId="formFoodItemDescription">
+                          <Form.Label>Item Description</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="Enter item description"
+                            value={newFoodItem.description}
+                            onChange={(e) =>
+                              setNewFoodItem({
+                                ...newFoodItem,
+                                description: e.target.value,
+                              })
+                            }
+                          />
+                        </Form.Group>
+                        <Form.Group controlId="formFoodItemCategory">
+                          <Form.Label>Item Category</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="Enter item category"
+                            value={newFoodItem.category}
+                            onChange={(e) =>
+                              setNewFoodItem({
+                                ...newFoodItem,
+                                category: e.target.value,
+                              })
+                            }
+                          />
+                        </Form.Group>
+                      </Form>
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button
+                        variant="secondary"
+                        onClick={handleCloseAddFoodModal}
+                      >
+                        Close
+                      </Button>
+                      <Button variant="primary" onClick={handleAddFoodItem}>
+                        Add Food Item
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
+                </>
+              )}
+            </Tab>
             <Tab eventKey="tables" title="Tables">
               {showTables && (
                 <>
@@ -361,17 +443,79 @@ function RestaurantAdmin() {
                       </tr>
                     </thead>
                     <tbody>
-                      {Object.entries(restaurantData.tables).map(
-                        ([seatingCapacity, tableNumber], index) => (
-                          <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>{seatingCapacity}</td>
-                            <td>{tableNumber}</td>
-                          </tr>
-                        )
-                      )}
+                      {restaurantData.tables &&
+                        Object.entries(restaurantData.tables).map(
+                            ([seatingCapacity, tableNumber], index) =>
+                              (
+                                <tr key={index}>
+                                  <td>{index + 1}</td>
+                                  <td>{seatingCapacity}</td>
+                                  <td>{tableNumber}</td>
+                                </tr>
+                              )
+                        )}
                     </tbody>
                   </Table>
+                  {/* Add button to trigger the addition of a new food item */}
+                  <Button variant="primary" onClick={handleShowAddTableModal}>
+                    Update Tables
+                  </Button>
+
+                  {/* Modal for adding a new food item */}
+                  <Modal
+                    show={showAddTableModal}
+                    onHide={handleCloseAddTableModal}
+                  >
+                    <Modal.Header closeButton>
+                      <Modal.Title>Add Tables</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <Form>
+                        <Form.Group controlId="formTableCapacity">
+                          <Form.Label>Seating Capacity of Table</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="Enter seating Capacity of table"
+                            value={newTable.tableSize}
+                            onChange={(e) =>
+                              setNewTable({
+                                ...newTable,
+                                tableSize: e.target.value,
+                              })
+                            }
+                          />
+                        </Form.Group>
+                        <Form.Group controlId="formTableNumbers">
+                          <Form.Label>
+                            No. of Tables for the above mentioned seating
+                            capacity
+                          </Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="Enter no. of tables"
+                            value={newTable.numberOfTables}
+                            onChange={(e) =>
+                              setNewTable({
+                                ...newTable,
+                                numberOfTables: e.target.value,
+                              })
+                            }
+                          />
+                        </Form.Group>
+                      </Form>
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button
+                        variant="secondary"
+                        onClick={handleCloseAddTableModal}
+                      >
+                        Close
+                      </Button>
+                      <Button variant="primary" onClick={handleAddTableItem}>
+                        Update Tables
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
                   <p>Number of Tables: {restaurantData.noOfTables}</p>
                 </>
               )}
