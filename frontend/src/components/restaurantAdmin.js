@@ -43,14 +43,14 @@ function RestaurantAdmin() {
 
   const id = location.state.id; // Access the data passed from the Home component
 
-  const [availability, setAvailability] = useState({
+  const [Openinghours, setOpeninghours] = useState({
     closingTime: "",
     openingTime: "",
   });
 
   const [showAlert, setShowAlert] = useState(false);
 
-  const [showAvailability, setShowAvailability] = useState(true);
+  const [showOpeninghours, setShowOpeninghours] = useState(true);
   const [showRestaurantStatus, setShowRestaurantStatus] = useState(true);
   const [showFoodMenu, setShowFoodMenu] = useState(true);
   const [showTables, setShowTables] = useState(true);
@@ -77,19 +77,19 @@ function RestaurantAdmin() {
       .then((response) => {
         setRestaurantData(response.data);
         setIsToggled(response.data.available);
-        setAvailability({
+        setOpeninghours({
           closingTime: response.data.closingTime,
           openingTime: response.data.openingTime,
         });
       });
   }, [user.id]);
 
-  const handleAddAvailability = () => {
+  const handleAddOpeninghours = () => {
     const operation = {
       id: id,
       operation: "availablilty",
-      openingTime: availability.openingTime,
-      closingTime: availability.closingTime,
+      openingTime: Openinghours.openingTime,
+      closingTime: Openinghours.closingTime,
     };
 
     axios
@@ -98,9 +98,9 @@ function RestaurantAdmin() {
         operation
       )
       .then(() => {
-        setAvailability({
-          openingTime: availability.openingTime,
-          closingTime: availability.closingTime,
+        setOpeninghours({
+          openingTime: Openinghours.openingTime,
+          closingTime: Openinghours.closingTime,
         });
         setShowAlert(true);
       });
@@ -332,26 +332,26 @@ function RestaurantAdmin() {
 
   const handleTabSelect = (key) => {
     switch (key) {
-      case "availability":
-        setShowAvailability(true);
+      case "Openinghours":
+        setShowOpeninghours(true);
         setShowRestaurantStatus(false);
         setShowFoodMenu(false);
         setShowTables(false);
         break;
       case "restaurantStatus":
-        setShowAvailability(false);
+        setShowOpeninghours(false);
         setShowRestaurantStatus(true);
         setShowFoodMenu(false);
         setShowTables(false);
         break;
       case "foodMenu":
-        setShowAvailability(false);
+        setShowOpeninghours(false);
         setShowRestaurantStatus(false);
         setShowFoodMenu(true);
         setShowTables(false);
         break;
       case "tables":
-        setShowAvailability(false);
+        setShowOpeninghours(false);
         setShowRestaurantStatus(false);
         setShowFoodMenu(false);
         setShowTables(true);
@@ -375,42 +375,42 @@ function RestaurantAdmin() {
       <Row>
         <Col md={3}>
           <Tabs
-            defaultActiveKey="availability"
+            defaultActiveKey="Openinghours"
             onSelect={handleTabSelect}
             id="restaurant-admin-tabs"
           >
-            <Tab eventKey="availability" title="Availability">
-              {showAvailability && (
+            <Tab eventKey="Openinghours" title="Openinghours">
+              {showOpeninghours && (
                 <>
                   <Form>
-                    <Form.Group controlId="formAvailabilityFrom">
+                    <Form.Group controlId="formOpeninghoursFrom">
                       <Form.Label>Opening Time</Form.Label>
                       <Form.Control
                         type="time"
-                        value={availability.openingTime}
+                        value={Openinghours.openingTime}
                         onChange={(e) =>
-                          setAvailability({
-                            ...availability,
+                          setOpeninghours({
+                            ...Openinghours,
                             openingTime: e.target.value,
                           })
                         }
                       />
                     </Form.Group>
-                    <Form.Group controlId="formAvailabilityTo">
+                    <Form.Group controlId="formOpeninghoursTo">
                       <Form.Label>Closing Time</Form.Label>
                       <Form.Control
                         type="time"
-                        value={availability.closingTime}
+                        value={Openinghours.closingTime}
                         onChange={(e) =>
-                          setAvailability({
-                            ...availability,
+                          setOpeninghours({
+                            ...Openinghours,
                             closingTime: e.target.value,
                           })
                         }
                       />
                     </Form.Group>
-                    <Button variant="primary" onClick={handleAddAvailability}>
-                      Set Availability
+                    <Button variant="primary" onClick={handleAddOpeninghours}>
+                      Set Openinghours
                     </Button>
                   </Form>
                   {showAlert && (
@@ -419,7 +419,7 @@ function RestaurantAdmin() {
                       onClose={() => setShowAlert(false)}
                       dismissible
                     >
-                      Availability added successfully!
+                      Openinghours added successfully!
                     </Alert>
                   )}
                 </>
