@@ -97,6 +97,7 @@ function Restaurant() {
         {menu?.map((menuItem, index) => (
           <div key={index} className="card">
             <p>Name: {menuItem.name}</p>
+            <p>Price: {menuItem.price}</p>
             <button onClick={navigateToMenuReservation}>
               <img src={menuItem.image} alt={`Item ${index}`} />
             </button>

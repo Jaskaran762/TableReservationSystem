@@ -308,7 +308,6 @@ function RestaurantAdmin() {
     try {
       // Update the selected image when the file input changes
       console.log(e.target.files[0]);
-      alert(e.target.files[0]);
       const file = e.target.files[0];
       const reader = new FileReader();
 
@@ -317,6 +316,7 @@ function RestaurantAdmin() {
           const imageData = reader.result; // Use reader.result instead of e.target.result
           const response = await ImageService.uploadImageData(imageData);
           setSelectedImage(response.data.message);
+          alert(selectedImage);
         } catch (uploadError) {
           // Handle error during image upload
           console.error("Error uploading image:", uploadError);
@@ -569,7 +569,7 @@ function RestaurantAdmin() {
                       </Form>
                     </Modal.Body>
                     <Modal.Footer>
-                      <Button
+                      <Button 
                         variant="secondary"
                         onClick={handleCloseAddFoodModal}
                       >
