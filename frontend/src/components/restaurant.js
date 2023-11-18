@@ -3,7 +3,7 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 import "./restaurant.css"; // Import your CSS file
 import { useNavigate } from "react-router-dom";
-import Nav from "react-bootstrap/Nav";
+// import Nav from "react-bootstrap/Nav";
 import { useSelector } from "react-redux";
 import { selectUser } from "./redux/userSlice";
 

@@ -4,7 +4,7 @@ import { Form, Button, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUser } from "./redux/userSlice";
-import { v4 as uuidv4 } from "uuid";
+// import { v4 as uuidv4 } from "uuid";
 const ImageService = require("../services/uploadImageService");
 
 const CreateRestaurant = () => {
@@ -15,6 +15,7 @@ const CreateRestaurant = () => {
     location: "",
     city: "",
     photo: "",
+    discount:"",
   });
   const user = useSelector(selectUser);
 

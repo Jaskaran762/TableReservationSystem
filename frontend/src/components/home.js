@@ -4,12 +4,13 @@ import { useNavigate } from "react-router-dom";
 import "./home.css";
 import Nav from "react-bootstrap/Nav";
 import Card from "react-bootstrap/Card";
-import Form from "react-bootstrap/Form";
+// import Form from "react-bootstrap/Form";
 import { useSelector } from "react-redux";
 import { selectUser, selectLoginType } from "./redux/userSlice";
 
 function Home() {
   console.log("! in Home Component");
+
   const [city, setCity] = useState("");
   const [name, setName] = useState("");
   const [rating, setRating] = useState("");
@@ -19,7 +20,6 @@ function Home() {
   const user = useSelector(selectUser);
   const loginType = useSelector(selectLoginType);
   const username = user.user.email;
-
   useEffect(() => {
     const requestBody = {};
     if (loginType.loginType == "PARTNER") {
@@ -170,6 +170,13 @@ function Home() {
                     <div>Rating: {restaurant.resRating}</div>
                     <div>Opening Time: {restaurant.openingTime}</div>
                     <div>Closing Time: {restaurant.closingTime}</div>
+                    {/* {restaurant.discount !== undefined && (
+                        <div>
+                          {parseInt(restaurant.discount) > 0 && ( */}
+                            <div>Discount: {restaurant.discount}%</div>
+                          {/* )}
+                        </div>
+                    )} */}
                   </Card.Text>
                 </Card.Body>
               </Card>

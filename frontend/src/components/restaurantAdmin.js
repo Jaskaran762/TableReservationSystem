@@ -460,6 +460,8 @@ function RestaurantAdmin() {
                         <th>#</th>
                         <th>Item</th>
                         <th>Price</th>
+                        <th>Discount</th>
+                        <th>Availability</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -469,6 +471,8 @@ function RestaurantAdmin() {
                             <td>{index + 1}</td>
                             <td>{item.name}</td>
                             <td>{item.price}</td>
+                            <td>{item.discount}</td>
+                            <td>{item.availability ? 'Yes' : 'Out of Stock'}</td>
                             <td>
                               <Button
                                 variant="danger"
