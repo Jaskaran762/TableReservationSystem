@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
 import { useSelector } from "react-redux";
 import { selectUser } from "./redux/userSlice";
+import { v4 as uuidv4 } from "uuid";
 import {
   Container,
   Row,
@@ -21,14 +22,16 @@ import {
   ToggleButton as RBToggleButton,
   Modal,
 } from "react-bootstrap";
+const ImageService = require( "../services/uploadImageService");
 
 function RestaurantAdmin() {
   const user = useSelector(selectUser);
   const location = useLocation();
   const navigate = useNavigate();
   const [isToggled, setIsToggled] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
   const id = 1;
-
+  const [isUpdateMode, setIsUpdateMode] = useState(false);
   const [restaurantData, setRestaurantData] = useState({
     closingTime: "",
     openingTime: "",
@@ -57,6 +60,8 @@ function RestaurantAdmin() {
     price: "",
     description: "",
     category: "",
+    menu_id: "",
+    image:""
   });
   const [newTable, setNewTable] = useState({
     tableSize: "",
@@ -118,6 +123,19 @@ function RestaurantAdmin() {
   };
 
   const handleShowAddFoodModal = () => {
+    // Reset the newFoodItem state
+    setNewFoodItem({
+      name: "",
+      price: "",
+      description: "",
+      category: "",
+      image:""
+    });
+
+    // Set the update mode to false
+    setIsUpdateMode(false);
+
+    // Show the modal for adding a new food item
     setShowAddFoodModal(true);
   };
 
@@ -126,6 +144,9 @@ function RestaurantAdmin() {
   };
 
   const handleAddFoodItem = () => {
+
+    alert(selectedImage);
+    newFoodItem.image = selectedImage;
     // Validate input
     if (newFoodItem.name.trim() && !isNaN(newFoodItem.price)) {
       const newItem = {
@@ -133,20 +154,29 @@ function RestaurantAdmin() {
         price: newFoodItem.price,
         category: newFoodItem.category,
         description: newFoodItem.description,
-        menu_id: restaurantData.menuList.length,
+        menu_id: isUpdateMode ? newFoodItem.menu_id : uuidv4(),
+        image: newFoodItem.image
       };
 
-      // Update the menu list
+      // Update or add the menu item based on the mode
+      const updatedMenuList = isUpdateMode
+        ? restaurantData.menuList.map((item) =>
+            item.menu_id === newItem.menu_id ? newItem : item
+          )
+        : [...restaurantData.menuList, newItem];
+
+      // Update the menu list in the state
       setRestaurantData((prevData) => ({
         ...prevData,
-        menuList: [...prevData.menuList, newItem],
+        menuList: updatedMenuList,
       }));
 
       const operation = {
         id: id,
         operation: "menu",
-        menuList: [...restaurantData.menuList, newItem],
+        menuList: updatedMenuList,
       };
+
       axios
         .post(
           `https://4nghc9vm23.execute-api.us-east-1.amazonaws.com/dev//edit-partner-detail`,
@@ -172,15 +202,18 @@ function RestaurantAdmin() {
   const handleAddTableItem = () => {
     // Validate input
     if (!isNaN(newTable.tableSize) && !isNaN(newTable.numberOfTables)) {
-
-        restaurantData.noOfTables -= restaurantData.tables[newTable.tableSize]
-        restaurantData.noOfTables += parseInt(newTable.numberOfTables);
+      restaurantData.noOfTables -= restaurantData.tables[newTable.tableSize];
+      restaurantData.noOfTables += parseInt(newTable.numberOfTables);
       if (!(newTable.tableSize in restaurantData.tables)) {
         // Key doesn't exist, so insert the key-value pair
-        restaurantData.tables[newTable.tableSize] = parseInt(newTable.numberOfTables);
+        restaurantData.tables[newTable.tableSize] = parseInt(
+          newTable.numberOfTables
+        );
       } else {
         // Key already exists, update the value
-        restaurantData.tables[newTable.tableSize] = parseInt(newTable.numberOfTables);
+        restaurantData.tables[newTable.tableSize] = parseInt(
+          newTable.numberOfTables
+        );
       }
 
       const tab = restaurantData.tables;
@@ -191,7 +224,7 @@ function RestaurantAdmin() {
         id: id,
         operation: "table",
         tables: tab,
-        noOfTables: restaurantData.noOfTables
+        noOfTables: restaurantData.noOfTables,
       };
 
       axios
@@ -207,6 +240,89 @@ function RestaurantAdmin() {
       alert("Invalid input. Please enter a valid input.");
     }
   };
+
+  const handleDeleteFoodItem = (menuId) => {
+    // Filter out the item to be deleted
+    const updatedMenuList = restaurantData.menuList.filter(
+      (item) => item.menu_id !== menuId
+    );
+
+    // Update the menu list in the state
+    setRestaurantData((prevData) => ({
+      ...prevData,
+      menuList: updatedMenuList,
+    }));
+
+    // Send a request to update the menu list on the server
+    const operation = {
+      id: id,
+      operation: "menu",
+      menuList: updatedMenuList,
+    };
+
+    axios
+      .post(
+        `https://4nghc9vm23.execute-api.us-east-1.amazonaws.com/dev//edit-partner-detail`,
+        operation
+      )
+      .then(() => {
+        // Handle success or show a notification
+      })
+      .catch((error) => {
+        // Handle errors
+      });
+  };
+
+  const handleUpdateFoodItem = (menuId) => {
+    // Find the item to be updated
+    const itemToUpdate = restaurantData.menuList.find(
+      (item) => item.menu_id === menuId
+    );
+
+    // Set the values in the state for the modal
+    setNewFoodItem({
+      name: itemToUpdate.name,
+      price: itemToUpdate.price,
+      description: itemToUpdate.description,
+      category: itemToUpdate.category,
+      menu_id: menuId,
+      image: itemToUpdate.image
+    });
+
+    // Set the update mode to true
+    setIsUpdateMode(true);
+
+    // Show the modal for updating the food item
+    setShowAddFoodModal(true);
+  };
+
+  const handleFileChange = async (e) => {
+    try {
+      // Update the selected image when the file input changes
+      console.log(e.target.files[0]);
+      alert(e.target.files[0]);
+      const file = e.target.files[0];
+      const reader = new FileReader();
+  
+      reader.onload = async function (event) {
+        try {
+          const imageData = reader.result; // Use reader.result instead of e.target.result
+          const response = await ImageService.uploadImageData(imageData);
+          setSelectedImage(response.data.message);
+        } catch (uploadError) {
+          // Handle error during image upload
+          console.error("Error uploading image:", uploadError);
+        }
+      };
+  
+      reader.readAsDataURL(file);
+    } catch (error) {
+      // Handle other errors (e.g., if the file is not selected properly)
+      console.error("Error handling file change:", error);
+    }
+  };
+  
+  
 
   const handleTabSelect = (key) => {
     switch (key) {
@@ -338,6 +454,22 @@ function RestaurantAdmin() {
                           <td>{index + 1}</td>
                           <td>{item.name}</td>
                           <td>{item.price}</td>
+                          <td>
+                            <Button
+                              variant="danger"
+                              onClick={() => handleDeleteFoodItem(item.menu_id)}
+                            >
+                              Delete
+                            </Button>
+                          </td>
+                          <td>
+                            <Button
+                              variant="primary"
+                              onClick={() => handleUpdateFoodItem(item.menu_id)}
+                            >
+                              Update
+                            </Button>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -414,6 +546,15 @@ function RestaurantAdmin() {
                             }
                           />
                         </Form.Group>
+                        {/* Add the file input for image upload */}
+                        <Form.Group controlId="formFoodItemImage">
+                          <Form.Label>Item Image</Form.Label>
+                          <Form.Control
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                          />
+                        </Form.Group>
                       </Form>
                     </Modal.Body>
                     <Modal.Footer>
@@ -445,14 +586,13 @@ function RestaurantAdmin() {
                     <tbody>
                       {restaurantData.tables &&
                         Object.entries(restaurantData.tables).map(
-                            ([seatingCapacity, tableNumber], index) =>
-                              (
-                                <tr key={index}>
-                                  <td>{index + 1}</td>
-                                  <td>{seatingCapacity}</td>
-                                  <td>{tableNumber}</td>
-                                </tr>
-                              )
+                          ([seatingCapacity, tableNumber], index) => (
+                            <tr key={index}>
+                              <td>{index + 1}</td>
+                              <td>{seatingCapacity}</td>
+                              <td>{tableNumber}</td>
+                            </tr>
+                          )
                         )}
                     </tbody>
                   </Table>
