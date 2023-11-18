@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import "./restaurant.css"; // Import your CSS file
-import { useNavigate } from "react-router-dom";
-import Nav from "react-bootstrap/Nav";
+// import { useNavigate } from "react-router-dom";
+// import Nav from "react-bootstrap/Nav";
 import { useSelector } from "react-redux";
 import { selectUser } from "./redux/userSlice";
 import { v4 as uuidv4 } from "uuid";
@@ -17,7 +17,7 @@ import {
   Alert,
   Tab,
   Tabs,
-  Card,
+  // Card,
   ToggleButtonGroup as RBToggleButtonGroup,
   ToggleButton as RBToggleButton,
   Modal,
@@ -27,7 +27,7 @@ const ImageService = require("../services/uploadImageService");
 function RestaurantAdmin() {
   const user = useSelector(selectUser);
   const location = useLocation();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [isToggled, setIsToggled] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [isUpdateMode, setIsUpdateMode] = useState(false);
@@ -63,6 +63,8 @@ function RestaurantAdmin() {
     category: "",
     menu_id: "",
     image: "",
+    discount:"",
+    availability:false,
   });
   const [newTable, setNewTable] = useState({
     tableSize: "",
@@ -131,6 +133,8 @@ function RestaurantAdmin() {
       description: "",
       category: "",
       image: "",
+      discount: "",
+      availability:"",
     });
 
     // Set the update mode to false
@@ -156,6 +160,8 @@ function RestaurantAdmin() {
         description: newFoodItem.description,
         menu_id: isUpdateMode ? newFoodItem.menu_id : uuidv4(),
         image: newFoodItem.image,
+        discount: newFoodItem.discount,
+        availability: newFoodItem.availability,
       };
 
       if (restaurantData.menuList == null) {
@@ -295,6 +301,8 @@ function RestaurantAdmin() {
       category: itemToUpdate.category,
       menu_id: menuId,
       image: itemToUpdate.image,
+      discount:itemToUpdate.discount,
+      availability: itemToUpdate.availability,
     });
 
     // Set the update mode to true
@@ -564,6 +572,34 @@ function RestaurantAdmin() {
                             type="file"
                             accept="image/*"
                             onChange={handleFileChange}
+                          />
+                        </Form.Group>
+                        <Form.Group controlId="formFoodItemDiscount">
+                          <Form.Label>Item Discount</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="Enter item discount percentage"
+                            value={newFoodItem.discount}
+                            onChange={(e) =>
+                              setNewFoodItem({
+                                ...newFoodItem,
+                                discount: e.target.value,
+                              })
+                            }
+                          />
+                        </Form.Group>
+                        <Form.Group controlId="formFoodItemAvailability">
+                          <Form.Label>Item Availability</Form.Label>
+                          <Form.Check
+                            type="checkbox"
+                            label="Available"
+                            checked={newFoodItem.availability}
+                            onChange={(e) =>
+                              setNewFoodItem({
+                                ...newFoodItem,
+                                availability: e.target.checked,
+                              })
+                            }
                           />
                         </Form.Group>
                       </Form>

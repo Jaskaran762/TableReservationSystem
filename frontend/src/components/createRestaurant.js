@@ -133,6 +133,17 @@ const CreateRestaurant = () => {
             onChange={handleFileChange}
           />
         </Form.Group>
+        <Form.Group controlId="restaurantDiscount">
+          <Form.Label>Restaurant Discount (%)</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter discount percentage"
+            name="discount"
+            value={restaurantData.discount}
+            onChange={handleChange}
+            required
+          />
+  </Form.Group>
         <br></br>
         <Button variant="primary" type="submit">
           Create Restaurant
