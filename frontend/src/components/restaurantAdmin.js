@@ -22,7 +22,7 @@ import {
   ToggleButton as RBToggleButton,
   Modal,
 } from "react-bootstrap";
-const ImageService = require( "../services/uploadImageService");
+const ImageService = require("../services/uploadImageService");
 
 function RestaurantAdmin() {
   const user = useSelector(selectUser);
@@ -30,7 +30,6 @@ function RestaurantAdmin() {
   const navigate = useNavigate();
   const [isToggled, setIsToggled] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const id = 1;
   const [isUpdateMode, setIsUpdateMode] = useState(false);
   const [restaurantData, setRestaurantData] = useState({
     closingTime: "",
@@ -41,6 +40,8 @@ function RestaurantAdmin() {
     isRestaurantOpen: false,
     isFullyBooked: false,
   });
+
+  const id = location.state.id; // Access the data passed from the Home component
 
   const [availability, setAvailability] = useState({
     closingTime: "",
@@ -61,7 +62,7 @@ function RestaurantAdmin() {
     description: "",
     category: "",
     menu_id: "",
-    image:""
+    image: "",
   });
   const [newTable, setNewTable] = useState({
     tableSize: "",
@@ -129,7 +130,7 @@ function RestaurantAdmin() {
       price: "",
       description: "",
       category: "",
-      image:""
+      image: "",
     });
 
     // Set the update mode to false
@@ -144,7 +145,6 @@ function RestaurantAdmin() {
   };
 
   const handleAddFoodItem = () => {
-
     alert(selectedImage);
     newFoodItem.image = selectedImage;
     // Validate input
@@ -155,9 +155,12 @@ function RestaurantAdmin() {
         category: newFoodItem.category,
         description: newFoodItem.description,
         menu_id: isUpdateMode ? newFoodItem.menu_id : uuidv4(),
-        image: newFoodItem.image
+        image: newFoodItem.image,
       };
 
+      if (restaurantData.menuList == null) {
+        restaurantData.menuList = "";
+      }
       // Update or add the menu item based on the mode
       const updatedMenuList = isUpdateMode
         ? restaurantData.menuList.map((item) =>
@@ -200,8 +203,13 @@ function RestaurantAdmin() {
   };
 
   const handleAddTableItem = () => {
-    // Validate input
-    if (!isNaN(newTable.tableSize) && !isNaN(newTable.numberOfTables)) {
+    if (restaurantData.tables == null) {
+      restaurantData.tables = {};
+      restaurantData.noOfTables = parseInt(newTable.numberOfTables);
+      restaurantData.tables[newTable.tableSize] = parseInt(
+        newTable.numberOfTables
+      );
+    } else if (!isNaN(newTable.tableSize) && !isNaN(newTable.numberOfTables)) {
       restaurantData.noOfTables -= restaurantData.tables[newTable.tableSize];
       restaurantData.noOfTables += parseInt(newTable.numberOfTables);
       if (!(newTable.tableSize in restaurantData.tables)) {
@@ -286,7 +294,7 @@ function RestaurantAdmin() {
       description: itemToUpdate.description,
       category: itemToUpdate.category,
       menu_id: menuId,
-      image: itemToUpdate.image
+      image: itemToUpdate.image,
     });
 
     // Set the update mode to true
@@ -303,7 +311,7 @@ function RestaurantAdmin() {
       alert(e.target.files[0]);
       const file = e.target.files[0];
       const reader = new FileReader();
-  
+
       reader.onload = async function (event) {
         try {
           const imageData = reader.result; // Use reader.result instead of e.target.result
@@ -314,15 +322,13 @@ function RestaurantAdmin() {
           console.error("Error uploading image:", uploadError);
         }
       };
-  
+
       reader.readAsDataURL(file);
     } catch (error) {
       // Handle other errors (e.g., if the file is not selected properly)
       console.error("Error handling file change:", error);
     }
   };
-  
-  
 
   const handleTabSelect = (key) => {
     switch (key) {
@@ -449,29 +455,34 @@ function RestaurantAdmin() {
                       </tr>
                     </thead>
                     <tbody>
-                      {restaurantData.menuList.map((item, index) => (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>{item.name}</td>
-                          <td>{item.price}</td>
-                          <td>
-                            <Button
-                              variant="danger"
-                              onClick={() => handleDeleteFoodItem(item.menu_id)}
-                            >
-                              Delete
-                            </Button>
-                          </td>
-                          <td>
-                            <Button
-                              variant="primary"
-                              onClick={() => handleUpdateFoodItem(item.menu_id)}
-                            >
-                              Update
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
+                      {restaurantData.menuList &&
+                        restaurantData.menuList.map((item, index) => (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{item.name}</td>
+                            <td>{item.price}</td>
+                            <td>
+                              <Button
+                                variant="danger"
+                                onClick={() =>
+                                  handleDeleteFoodItem(item.menu_id)
+                                }
+                              >
+                                Delete
+                              </Button>
+                            </td>
+                            <td>
+                              <Button
+                                variant="primary"
+                                onClick={() =>
+                                  handleUpdateFoodItem(item.menu_id)
+                                }
+                              >
+                                Update
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </Table>
 

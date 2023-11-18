@@ -10,6 +10,7 @@ import ListReservations from "../view/Reservations/ListReservations";
 import ReservationForm from "../view/Reservations/ReservationForm";
 import Restaurant from "../restaurant";
 import RestaurantAdmin from '../restaurantAdmin';
+import CreateRestaurant from '../createRestaurant';
 
 const Router = ()=> {
     const isAuth = useSelector(selectUser);
@@ -41,8 +42,9 @@ const Router = ()=> {
                 </Route>
                 <Route path='/partnerAPP' element={<Landing/>}>
                     <Route index element={ isAuth ? <Navigate to="/partnerAPP/dashboard" /> : <Navigate to="/partnerAPP"/>}/>
-                    <Route path='/partnerAPP/dashboard' element={<Dashboard/>}/>
+                    <Route path='/partnerAPP/dashboard' element={<Home/>}/>
                     <Route path='/partnerAPP/restaurant' element={<RestaurantAdmin/>}/>
+                    <Route path='/partnerAPP/createRestaurant' element={<CreateRestaurant/>}/>
                 </Route>
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>

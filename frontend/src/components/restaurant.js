@@ -20,7 +20,7 @@ function Restaurant() {
   const [error, setError] = useState(null);
 
   const location = useLocation();
-  const data = location.state.data; // Access the data passed from the Home component
+  const data = location.state.name; // Access the data passed from the Home component
 
   // Now you can use the 'data' variable, which contains the name
   const restaurantName = data;

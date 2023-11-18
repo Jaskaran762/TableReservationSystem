@@ -5,6 +5,8 @@ import "./home.css";
 import Nav from "react-bootstrap/Nav";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
+import { useSelector } from "react-redux";
+import { selectUser, selectLoginType } from "./redux/userSlice";
 
 function Home() {
   console.log("! in Home Component");
@@ -14,9 +16,15 @@ function Home() {
   const [restaurants, setRestaurants] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const user = useSelector(selectUser);
+  const loginType = useSelector(selectLoginType);
+  const username = user.user.email;
 
   useEffect(() => {
     const requestBody = {};
+    if (loginType.loginType == "PARTNER") {
+      requestBody.owner = username;
+    }
     const fetchRestaurants = async () => {
       try {
         const apiEndpoint =
@@ -39,13 +47,16 @@ function Home() {
     const apiEndpoint =
       "https://4nghc9vm23.execute-api.us-east-1.amazonaws.com/dev/get-data-restaurant";
     const requestBody = {};
+    if (loginType.loginType == "PARTNER") {
+      requestBody.owner = username;
+    }
     if (name && name.length != 0) {
       requestBody.name = name;
     }
-    if(city && city.length != 0){
+    if (city && city.length != 0) {
       requestBody.city = city;
     }
-    if(rating && rating.length != 0){
+    if (rating && rating.length != 0) {
       requestBody.rating = parseInt(rating);
     }
     try {
@@ -53,10 +64,9 @@ function Home() {
 
       const receivedRestaurants = response.data.restaurants || [];
       setRestaurants(receivedRestaurants);
-      if(receivedRestaurants.length == 0){
+      if (receivedRestaurants.length == 0) {
         throw new Error("No restaurant found");
-      }
-      else{
+      } else {
         setError(null);
       }
     } catch (error) {
@@ -65,9 +75,17 @@ function Home() {
     }
   };
 
-  const navigatePage = (data) => {
-    navigate("/restaurant", { state: { data } });
+  const navigatePage = (name, id) => {
+    if (loginType.loginType == "PARTNER") {
+      navigate("/partnerAPP/restaurant", { state: { id } });
+    } else {
+      navigate("/restaurant", { state: { name } });
+    }
   };
+
+  const handleAddRestaurant= () => {
+    navigate("/partnerAPP/createRestaurant");
+  }
 
   return (
     <>
@@ -132,7 +150,7 @@ function Home() {
               <Card
                 key={restaurant.name}
                 className="res"
-                onClick={() => navigatePage(restaurant.name)}
+                onClick={() => navigatePage(restaurant.name, restaurant.id)}
                 style={{
                   width: "25rem",
                   display: "inline-block",
@@ -157,6 +175,14 @@ function Home() {
               </Card>
             ))}
           </span>
+        </div>
+        <div>
+          {loginType.loginType === "PARTNER" && (
+            <div>
+              {/* Your content for PARTNER login type */}
+              <button onClick={handleAddRestaurant}>Add restaurant</button>
+            </div>
+          )}
         </div>
       </div>
     </>
