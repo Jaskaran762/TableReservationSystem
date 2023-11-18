@@ -11,6 +11,8 @@ import ReservationForm from "../view/Reservations/ReservationForm";
 import Restaurant from "../restaurant";
 import RestaurantAdmin from '../restaurantAdmin';
 import CreateRestaurant from '../createRestaurant';
+import MenuSelection from '../MenuSelection';
+import ReservedMenuPage from '../ReservedMenuPage';
 
 const Router = ()=> {
     const isAuth = useSelector(selectUser);
@@ -38,6 +40,8 @@ const Router = ()=> {
                     <Route path='/home' element={<Home/>} />
                     <Route path='/restaurant' element={<Restaurant/>} />
                     <Route path='/reservations' element={<ListReservations/>} />
+                    <Route path="/menu-selection" element={<MenuSelection/>} />
+                    <Route path="/reserved-menu" element={<ReservedMenuPage/>} />
                     <Route path='/restaurants/:restaurantId/createReservation' element={<ReservationForm/>}/>
                 </Route>
                 <Route path='/partnerAPP' element={<Landing/>}>
