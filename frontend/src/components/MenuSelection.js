@@ -7,6 +7,9 @@ const MenuSelection = () => {
     pizza: { quantity: 0 },
     pasta: { quantity: 0 },
     burger: { quantity: 0 },
+    ChickenBiryani: { quantity: 0 },
+    Rice: { quantity: 0 },
+    Paneer: { quantity: 0 },
     // Add more menu items as needed
   });
 
