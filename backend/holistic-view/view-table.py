@@ -30,23 +30,15 @@ def lambda_handler(event, context):
         db = firestore.client()
         collection_ref = db.collection('reservations')
         documents = collection_ref.stream()
-        daily, weekly, monthly, time_intervals= aggregate_table_bookings(documents)
-        daily = convert_keys(daily)
-        weekly = convert_keys(weekly)
-        monthly = convert_keys(monthly)
-        time_intervals = convert_keys(time_intervals)
-        
-        
+        booking_counts= table_bookings(documents)
         firebase_admin.delete_app(firebase_admin.get_app())
 
         return {
             'statusCode': 200,
-            'body':  {
-            'daily': daily,
-            'weekly': weekly,
-            'monthly': monthly,
-            'time_intervals': time_intervals
-        }
+            'header':{'Access-Control-Allow-Origin':'*',
+                      'Content-Type':'application/json'},
+            'body':  json.dumps(booking_counts, default=str)
+            
         }
 
     except Exception as e:
@@ -55,36 +47,36 @@ def lambda_handler(event, context):
             'body': f'Error: {str(e)}'
         }
 
-def aggregate_table_bookings(documents):
-    daily_counts = defaultdict(int)
-    weekly_counts = defaultdict(int)
-    monthly_counts = defaultdict(int)
-    time_interval_counts = defaultdict(int)
+def table_bookings(documents):
+    booking_counts = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(int))))
 
     for doc in documents:
         data = doc.to_dict()
-        date_str = data['date']
-        if date_str is not None:
-            date_obj = datetime.strptime(date_str, "%Y-%m-%d") 
+        date_str = data.get('date')
+        restaurant_id = data.get('restaurantId')
 
-        # Increment table count
-        key = (data['restaurantId'], data['tableName'])
-        daily_counts[(date_obj.date(), key)] += 1
-        weekly_counts[(date_obj.isocalendar()[1], key)] += 1
-        monthly_counts[(date_obj.month, key)] += 1
 
+        if date_str and restaurant_id:
+            date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+            daily_key = date_obj.strftime("%Y-%m-%d")
+            weekly_key = str(date_obj.isocalendar()[1])
+            monthly_key = str(date_obj.month)
+
+        
         time_slot = data.get('timeSlot')
         if time_slot:
             start_time = time_slot.get('start')
             end_time = time_slot.get('end')
             if start_time and end_time:
-                time_key = (start_time, end_time, key)
-                time_interval_counts[time_key] += 1
+                time_interval_key = f"{start_time}-{end_time}"
+                booking_counts[restaurant_id]['daily'][daily_key][time_interval_key] += 1
+                booking_counts[restaurant_id]['weekly'][weekly_key][time_interval_key] += 1  
+                booking_counts[restaurant_id]['monthly'][monthly_key][time_interval_key] += 1  
 
-    return daily_counts, weekly_counts, monthly_counts, time_interval_counts
+    return booking_counts
 
-def convert_keys(data):
-        return {str(key): value for key, value in data.items()}
+# def convert_keys(data):
+#         return {str(key): value for key, value in data.items()}
 
 # def main():
     
