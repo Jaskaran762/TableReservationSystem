@@ -13,6 +13,7 @@ import RestaurantAdmin from '../restaurantAdmin';
 import CreateRestaurant from '../createRestaurant';
 import MenuSelection from '../MenuSelection';
 import ReservedMenuPage from '../ReservedMenuPage';
+import TableBookings from '../TableBookings';
 
 const Router = ()=> {
     const isAuth = useSelector(selectUser);
@@ -49,6 +50,7 @@ const Router = ()=> {
                     <Route path='/partnerAPP/dashboard' element={<Home/>}/>
                     <Route path='/partnerAPP/restaurant' element={<RestaurantAdmin/>}/>
                     <Route path='/partnerAPP/createRestaurant' element={<CreateRestaurant/>}/>
+                    <Route path='/partnerAPP/tableBooking' element={<TableBookings/>}/>
                 </Route>
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
