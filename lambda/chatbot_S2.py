@@ -1,11 +1,12 @@
 import json
+import random
 import requests
 from typing import Dict, Any
 
 # Constants
 API_URL_TEMPLATE = "https://{}.execute-api.us-east-1.amazonaws.com/dev{}"
 
-GET_DATA_RESTAURANT = API_URL_TEMPLATE.format("4nghc9vm23", "/get-data-restaurant?id=1")
+GET_DATA_RESTAURANT = API_URL_TEMPLATE.format("4nghc9vm23", "/get-data-restaurant?id=4")
 EDIT_DATA_RESTAURANT = API_URL_TEMPLATE.format("4nghc9vm23", "/edit-partner-detail")
 GET_BOOKING_DATA = API_URL_TEMPLATE.format("29fjaz7bu8", "/table-booking-views")
 RESERVATIONS_URL = API_URL_TEMPLATE.rsplit('/', 1)[0].format("zoonh4myj4") + "{}".format("/reservations")
@@ -26,9 +27,11 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         "GetBookingInformation": handle_get_booking_information,
         "ManageOpeningTimes": handle_manage_opening_times,
         "ManageLocationInformation": handle_manage_location_information,
+        "CheckMenuAvailability": handle_check_menu_availability,
         "CheckReservationAvailability": handle_check_reservation_availability,
         "ReadReviews": handle_read_reviews,
         "ReadRestaurantRating": handle_read_restaurant_rating,
+        "ManageReservations": handle_manage_reservations
     }
 
     # Get the appropriate handler function based on the intent name
@@ -112,13 +115,36 @@ def handle_manage_location_information(event: Dict[str, Any]) -> Dict[str, Any]:
         return build_response("ManageLocationInformation", event, "Sorry, I didn't understand that request.")
 
 
+def handle_check_menu_availability(event: Dict[str, Any]) -> Dict[str, Any]:
+    menu_item = get_slot_value(event, 'MenuItem')
+
+    response = get_request(GET_DATA_RESTAURANT)
+    if response:
+        menu_list = response.get('menuList', [])
+
+        if menu_item:
+            # Search for the menu item in the menu list
+            found_items = [item for item in menu_list if item.get('name') == menu_item]
+
+            if found_items:
+                return build_response("CheckMenuAvailability", event, f"Menu item '{menu_item}' is available.")
+            else:
+                return build_response("CheckMenuAvailability", event, f"Menu item '{menu_item}' is not available.")
+        else:
+            # Return all menu items
+            menu_items = [item.get('name') for item in menu_list]
+            return build_response("CheckMenuAvailability", event, f"All menu items: " + ", ".join(menu_items))
+    else:
+        return build_response("CheckMenuAvailability", event, "Failed to retrieve menu data.")
+
+
 def handle_check_reservation_availability(event: Dict[str, Any]) -> Dict[str, Any]:
     input_date = get_slot_value(event, 'Date')
 
     response = get_request(RESERVATIONS_URL)
     if response:
         # Filter reservations by the input date
-        reservations_for_date = [res for res in response if res.get('date') == input_date]
+        reservations_for_date = [res for res in response if res.get('date') == str(input_date) if 'date' in res]
 
         if reservations_for_date:
             booked_slots = []
@@ -136,16 +162,28 @@ def handle_check_reservation_availability(event: Dict[str, Any]) -> Dict[str, An
 
 
 def handle_read_reviews(event: Dict[str, Any]) -> Dict[str, Any]:
+    rating_type = get_slot_value(event, 'RatingType')
+
     response = get_request(GET_DATA_RESTAURANT)
-
     if response and "reviewList" in response and response["reviewList"]:
-        # Sort reviews by review_id assuming it indicates recency (adjust if needed)
-        latest_review = sorted(response["reviewList"], key=lambda x: x.get('review_id', 0), reverse=True)[0]
-        review_author = latest_review.get("author", "Anonymous")
-        review_rating = latest_review.get("rating", "No rating")
-        review_description = latest_review.get("description", "No description provided.")
+        review_list = response["reviewList"]
 
-        return build_response("ReadReviews", event, f"Latest review by {review_author}: Rating - {review_rating}, Comment - '{review_description}'.")
+        if rating_type:
+            reviews_with_rating = [review for review in review_list if review.get("rating") == rating_type]
+            if reviews_with_rating:
+                random_review = random.choice(reviews_with_rating)
+                review_author = random_review.get("author", "Anonymous")
+                review_rating = random_review.get("rating", "No rating")
+                review_description = random_review.get("description", "No description provided.")
+                return build_response("ReadReviews", event, f"Random review with rating {rating_type} by {review_author}: Rating - {review_rating}, Comment - '{review_description}'.")
+            else:
+                return build_response("ReadReviews", event, f"No reviews found with rating {rating_type}.")
+        else:
+            latest_review = max(review_list, key=lambda x: x.get('review_id', 0))
+            review_author = latest_review.get("author", "Anonymous")
+            review_rating = latest_review.get("rating", "No rating")
+            review_description = latest_review.get("description", "No description provided.")
+            return build_response("ReadReviews", event, f"Latest review by {review_author}: Rating - {review_rating}, Comment - '{review_description}'.")
     else:
         return build_response("ReadReviews", event, "Failed to retrieve reviews or no reviews available for this restaurant.")
 
@@ -164,6 +202,36 @@ def handle_read_restaurant_rating(event: Dict[str, Any]) -> Dict[str, Any]:
         return build_response("ReadRestaurantRating", event, "Failed to retrieve ratings.")
 
 
+def handle_manage_reservations(event: Dict[str, Any]) -> Dict[str, Any]:
+    action_type = get_slot_value(event, 'ActionType')
+
+    if action_type == 'view':
+        response = get_request(RESERVATIONS_URL)
+        if response:
+            reservations = json.loads(response['body'])
+            return build_response("ManageReservations", event, f"Reservations: {reservations}")
+        else:
+            return build_response("ManageReservations", event, "No reservations found.")
+    elif action_type == 'update':
+        date = get_slot_value(event, 'ReservationDate')
+        start_time = get_slot_value(event, 'ReservationTime')
+        customer_name = get_slot_value(event, 'CustomerName')
+
+        payload = {
+            "name": customer_name,
+            "date": date,
+            "timeSlot": {
+                "start": start_time,
+            }
+        }
+
+        response = post_request(RESERVATIONS_URL, payload)
+        if response == "Success":
+            return build_response("ManageReservations", event, f"Reservation updated successfully.")
+        else:
+            return build_response("ManageReservations", event, f"Falied to update reservation.")
+    else:
+        return build_response("ManageReservations", event, "Sorry, I didn't understand that request.")
 
 
 def handle_default(event: Dict[str, Any]) -> Dict[str, Any]:
