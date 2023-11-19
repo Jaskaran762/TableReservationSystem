@@ -7,6 +7,7 @@ API_URL_TEMPLATE = "https://{}.execute-api.us-east-1.amazonaws.com/dev{}"
 
 GET_DATA_RESTAURANT = API_URL_TEMPLATE.format("4nghc9vm23", "/get-data-restaurant?id=1")
 EDIT_DATA_RESTAURANT = API_URL_TEMPLATE.format("4nghc9vm23", "/edit-partner-detail")
+GET_BOOKING_DATA = API_URL_TEMPLATE.format("29fjaz7bu8", "/table-booking-views")
 RESERVATIONS_URL = API_URL_TEMPLATE.rsplit('/', 1)[0].format("zoonh4myj4") + "{}".format("/reservations")
 
 def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
@@ -22,6 +23,7 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 
     # Mapping of intent names to handler functions
     handlers = {
+        "GetBookingInformation": handle_get_booking_information,
         "ManageOpeningTimes": handle_manage_opening_times,
         "ManageLocationInformation": handle_manage_location_information,
         "CheckReservationAvailability": handle_check_reservation_availability,
@@ -34,6 +36,21 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 
     # Execute the handler function and return its response
     return handler(event)
+
+
+def handle_get_booking_information(event: Dict[str, Any]) -> Dict[str, Any]:
+    input_time_period = get_slot_value(event, 'TimePeriod')
+    input_restaurant_name = get_slot_value(event, 'RestaurantName')
+
+    response = get_request(GET_BOOKING_DATA)
+    if response:
+        reservations = json.loads(response['body'])
+        restaurant_reservations = reservations.get(input_restaurant_name, {})
+        reservations_for_time_period = restaurant_reservations.get(input_time_period, {})
+
+        return build_response("GetBookingInformation", event, f"Reservations for {input_restaurant_name} during {input_time_period}: {reservations_for_time_period}")
+    else:
+        return build_response("GetBookingInformation", event, "No reservations found.")
 
 
 def handle_manage_opening_times(event: Dict[str, Any]) -> Dict[str, Any]:
