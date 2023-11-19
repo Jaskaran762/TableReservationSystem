@@ -10,6 +10,11 @@ import ListReservations from "../view/Reservations/ListReservations";
 import ReservationForm from "../view/Reservations/ReservationForm";
 import Restaurant from "../restaurant";
 import ListReservationsPartnerApp from "../view/partner_app/reservations/ListReservationsPartnerApp";
+import RestaurantAdmin from '../restaurantAdmin';
+import CreateRestaurant from '../createRestaurant';
+import MenuSelection from '../MenuSelection';
+import ReservedMenuPage from '../ReservedMenuPage';
+import TableBookings from '../TableBookings';
 
 const Router = ()=> {
     const isAuth = useSelector(selectUser);
@@ -37,11 +42,16 @@ const Router = ()=> {
                     <Route path='/home' element={<Home/>} />
                     <Route path='/restaurant' element={<Restaurant/>} />
                     <Route path='/reservations' element={<ListReservations/>} />
+                    <Route path="/menu-selection" element={<MenuSelection/>} />
+                    <Route path="/reserved-menu" element={<ReservedMenuPage/>} />
                     <Route path='/restaurants/:restaurantId/createReservation' element={<ReservationForm/>}/>
                 </Route>
                 <Route path='/partnerAPP' element={<Landing/>}>
                     <Route index element={ isAuth ? <Navigate to="/partnerAPP/dashboard" /> : <Navigate to="/partnerAPP"/>}/>
-                    <Route path='/partnerAPP/dashboard' element={<Dashboard/>}/>
+                    <Route path='/partnerAPP/dashboard' element={<Home/>}/>
+                    <Route path='/partnerAPP/restaurant' element={<RestaurantAdmin/>}/>
+                    <Route path='/partnerAPP/createRestaurant' element={<CreateRestaurant/>}/>
+                    <Route path='/partnerAPP/tableBooking' element={<TableBookings/>}/>
                     <Route path='/partnerAPP/restaurant/:restaurantId/reservations' element={<ListReservationsPartnerApp/>}/>
                 </Route>
                 <Route path="*" element={<Navigate to="/" />} />

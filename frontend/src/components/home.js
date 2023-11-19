@@ -4,19 +4,27 @@ import { useNavigate } from "react-router-dom";
 import "./home.css";
 import Nav from "react-bootstrap/Nav";
 import Card from "react-bootstrap/Card";
-import Form from "react-bootstrap/Form";
+// import Form from "react-bootstrap/Form";
+import { useSelector } from "react-redux";
+import { selectUser, selectLoginType } from "./redux/userSlice";
 
 function Home() {
   console.log("! in Home Component");
+
   const [city, setCity] = useState("");
   const [name, setName] = useState("");
   const [rating, setRating] = useState("");
   const [restaurants, setRestaurants] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-
+  const user = useSelector(selectUser);
+  const loginType = useSelector(selectLoginType);
+  const username = user.user.email;
   useEffect(() => {
     const requestBody = {};
+    if (loginType.loginType == "PARTNER") {
+      requestBody.owner = username;
+    }
     const fetchRestaurants = async () => {
       try {
         const apiEndpoint =
@@ -38,25 +46,46 @@ function Home() {
 
     const apiEndpoint =
       "https://4nghc9vm23.execute-api.us-east-1.amazonaws.com/dev/get-data-restaurant";
-    const requestBody = {
-      city: city,
-      rating: rating,
-    };
-
+    const requestBody = {};
+    if (loginType.loginType == "PARTNER") {
+      requestBody.owner = username;
+    }
+    if (name && name.length != 0) {
+      requestBody.name = name;
+    }
+    if (city && city.length != 0) {
+      requestBody.city = city;
+    }
+    if (rating && rating.length != 0) {
+      requestBody.rating = parseInt(rating);
+    }
     try {
       const response = await axios.post(apiEndpoint, requestBody);
 
       const receivedRestaurants = response.data.restaurants || [];
       setRestaurants(receivedRestaurants);
+      if (receivedRestaurants.length == 0) {
+        throw new Error("No restaurant found");
+      } else {
+        setError(null);
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
       setError(error);
     }
   };
 
-  const navigatePage = (data) => {
-    navigate("/restaurant", { state: { data } });
+  const navigatePage = (name, id) => {
+    if (loginType.loginType == "PARTNER") {
+      navigate("/partnerAPP/restaurant", { state: { id } });
+    } else {
+      navigate("/restaurant", { state: { name } });
+    }
   };
+
+  const handleAddRestaurant= () => {
+    navigate("/partnerAPP/createRestaurant");
+  }
 
   return (
     <>
@@ -116,12 +145,12 @@ function Home() {
           {error && <div>Error: {error.message}</div>}
         </div>
         <div className="content">
-          <span style={{ display: "inline-block", cursor: "pointer"}}>
+          <span style={{ display: "inline-block", cursor: "pointer" }}>
             {restaurants.map((restaurant) => (
               <Card
                 key={restaurant.name}
                 className="res"
-                onClick={() => navigatePage(restaurant.name)}
+                onClick={() => navigatePage(restaurant.name, restaurant.id)}
                 style={{
                   width: "25rem",
                   display: "inline-block",
@@ -141,11 +170,26 @@ function Home() {
                     <div>Rating: {restaurant.resRating}</div>
                     <div>Opening Time: {restaurant.openingTime}</div>
                     <div>Closing Time: {restaurant.closingTime}</div>
+                    {/* {restaurant.discount !== undefined && (
+                        <div>
+                          {parseInt(restaurant.discount) > 0 && ( */}
+                            <div>Discount: {restaurant.discount}%</div>
+                          {/* )}
+                        </div>
+                    )} */}
                   </Card.Text>
                 </Card.Body>
               </Card>
             ))}
           </span>
+        </div>
+        <div>
+          {loginType.loginType === "PARTNER" && (
+            <div>
+              {/* Your content for PARTNER login type */}
+              <button onClick={handleAddRestaurant}>Add restaurant</button>
+            </div>
+          )}
         </div>
       </div>
     </>

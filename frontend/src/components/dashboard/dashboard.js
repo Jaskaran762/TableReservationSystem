@@ -58,6 +58,21 @@ const dashboard = () => {
                         {/*<Button variant="primary" onClick={e => navigate('/restaurants')} >View Restaurants</Button>*/}
                     </CardBody>
                 </Card>
+
+                <Card style={{ width: '18rem' }}>
+                    {/*<Card.Img variant="top" src="holder.js/100px180" />*/}
+                    <CardBody>
+                        <CardTitle>Tables Booked</CardTitle>
+                        <CardText>
+                        View tables booked at time intervals in daily, weekly, and monthly views.
+                        </CardText>
+                        <Link to="/partnerAPP/tableBooking">
+                            <Button variant="primary" >View</Button>
+                        </Link>
+                        {/*<Button variant="primary" onClick={e => navigate('/restaurants')} >View Restaurants</Button>*/}
+                    </CardBody>
+                </Card>
+
             </CardGroup>
         </>
     )

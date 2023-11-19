@@ -82,8 +82,8 @@ const ReservedMenuPage = () => {
       ) : (
         <ul>
           {reservedMenu.map((item) => (
-            <li key={item.MenuName.S} style={{ marginBottom: '10px' }}>
-              {item.MenuName.S} - Quantity: {item.Quantity.N}
+            <li key={item.MenuName?.S} style={{ marginBottom: '10px' }}>
+            {item.MenuName?.S} - Quantity: {item.Quantity?.N}
               <div>
                 <button onClick={() => handleDeleteClick(item.MenuName.S)} style={{ marginLeft: '10px' }}>
                   Delete
