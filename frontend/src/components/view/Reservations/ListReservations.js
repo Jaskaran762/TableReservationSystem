@@ -53,7 +53,7 @@ function ReservationList() {
                             <Button
                                 variant="primary"
                                 onClick={() =>
-                                    handleUpdateClick(registration.restaurantId, registration.id)
+                                    handleUpdateClick(registration.restaurantId, registration.documentId)
                                 }
                             >
                                 Update

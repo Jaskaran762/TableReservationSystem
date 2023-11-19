@@ -1,17 +1,23 @@
-import axios from "axios";
+// import axios from "axios";
+import {axiosInstance} from './axiosInstance';
 const createReservation = (data)=>{
-        return axios.post('https://zoonh4myj4.execute-api.us-east-1.amazonaws.com/reservations', data);
+        return axiosInstance.post('https://zoonh4myj4.execute-api.us-east-1.amazonaws.com/reservations', data);
 }
 const fetchReservations = async (uid) => {
     try {
         const queryString = `userId=${uid}`;
         console.log(queryString);
-        return axios.get(`https://zoonh4myj4.execute-api.us-east-1.amazonaws.com/reservations?${queryString}`);
-
-        // const response = await axios.get('https://zoonh4myj4.execute-api.us-east-1.amazonaws.com/reservations');
-        // console.log("reservations->"+response);
-        // console.log("reservations->"+response.data);
-        // return response.data;
+        return axiosInstance.get(`https://zoonh4myj4.execute-api.us-east-1.amazonaws.com/reservations?${queryString}`);
+    } catch (error) {
+        console.error('Error fetching reservations:', error);
+        return [];
+    }
+};
+const fetchReservationsForPartner = async (restaurantId) => {
+    try {
+        const queryString = `restaurantId=${restaurantId}`;
+        console.log(queryString);
+        return axiosInstance.get(`https://zoonh4myj4.execute-api.us-east-1.amazonaws.com/reservations?${queryString}`);
     } catch (error) {
         console.error('Error fetching reservations:', error);
         return [];
@@ -19,7 +25,7 @@ const fetchReservations = async (uid) => {
 };
 const fetchReservation = async (reservationId) => {
     try {
-        const response = await axios.get('https://zoonh4myj4.execute-api.us-east-1.amazonaws.com/reservations/'+reservationId);
+        const response = await axiosInstance.get('https://zoonh4myj4.execute-api.us-east-1.amazonaws.com/reservations/'+reservationId);
         console.log("reservations->"+response);
         console.log("reservations->"+response.data);
         return response.data;
@@ -29,24 +35,19 @@ const fetchReservation = async (reservationId) => {
     }
 };
 
-const fetchAvailableSlots = async (date,start,end,restaurantId) =>{
-    // const queryParams = {
-    //     date: date,
-    //     start: start,
-    //     end: end,
-    //     restaurantId: restaurantId
-    // };
-    const queryString = `date=${date}&start=${start}&end=${end}&restaurantId=${restaurantId}`;
+const fetchAvailableSlots = async (date,start,end,restaurantId,tableName) =>{
+    const queryString = `date=${date}&start=${start}&end=${end}&restaurantId=${restaurantId}&tableName=${tableName}`;
     console.log(queryString);
-        return axios.get(`https://zoonh4myj4.execute-api.us-east-1.amazonaws.com/getAvailableSlots?${queryString}`);
+        return axiosInstance.get(`https://zoonh4myj4.execute-api.us-east-1.amazonaws.com/getAvailableSlots?${queryString}`);
 }
 const updateReservation = async (documentId,data) =>{
-    // const queryParams = {
-    //     date: date,
-    //     start: start,
-    //     end: end,
-    //     restaurantId: restaurantId
-    // };
-    return axios.put(`https://zoonh4myj4.execute-api.us-east-1.amazonaws.com/reservations/${documentId}`, data);
+    return axiosInstance.put(`https://zoonh4myj4.execute-api.us-east-1.amazonaws.com/reservations/${documentId}`, data);
 }
-export {createReservation,fetchReservations,fetchReservation,fetchAvailableSlots,updateReservation};
+
+const toggleReservationStatus = async (documentId,reservation) =>{
+    reservation.isAcceptedByRestaurant = !reservation.isAcceptedByRestaurant;
+    return axiosInstance.put(`https://zoonh4myj4.execute-api.us-east-1.amazonaws.com/reservations/${documentId}`,reservation);
+}
+
+export {createReservation,fetchReservations,fetchReservation
+    ,fetchAvailableSlots,updateReservation,fetchReservationsForPartner,toggleReservationStatus};
