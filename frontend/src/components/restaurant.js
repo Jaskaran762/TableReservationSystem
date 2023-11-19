@@ -94,7 +94,9 @@ function Restaurant() {
       )}
       <h2>Menu</h2>
       <div className="card-container">
-        {menu?.map((menuItem, index) => (
+      {menu
+        ?.filter((menuItem) => menuItem.availability)
+        .map((menuItem, index) => (
           <div key={index} className="card">
             <p>Name: {menuItem.name}</p>
             <p>Price: {menuItem.price}</p>
@@ -102,10 +104,12 @@ function Restaurant() {
               <img src={menuItem.image} alt={`Item ${index}`} />
             </button>
             <p>Price: {menuItem.price}</p>
-            <p>Discount:{menuItem.discount}</p>
+            {menuItem.discount && <p>Discount: {menuItem.discount}</p>}
           </div>
         ))}
-      </div>
+    </div>
+
+
       <h2>Reviews</h2>
       <div className="card-container">
         {reviews?.map((reviewItem, index) => (
