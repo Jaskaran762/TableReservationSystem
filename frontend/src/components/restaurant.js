@@ -101,10 +101,11 @@ function Restaurant() {
             <button onClick={navigateToMenuReservation}>
               <img src={menuItem.image} alt={`Item ${index}`} />
             </button>
+            <p>Price: {menuItem.price}</p>
+            <p>Discount:{menuItem.discount}</p>
           </div>
         ))}
       </div>
-
       <h2>Reviews</h2>
       <div className="card-container">
         {reviews?.map((reviewItem, index) => (
