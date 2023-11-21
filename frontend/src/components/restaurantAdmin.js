@@ -22,6 +22,7 @@ import {
   ToggleButton as RBToggleButton,
   Modal,
 } from "react-bootstrap";
+import ListReservationPartnerApp from "./view/partner_app/reservations/ListReservationsPartnerApp";
 const ImageService = require("../services/uploadImageService");
 
 function RestaurantAdmin() {
@@ -381,7 +382,7 @@ function RestaurantAdmin() {
         </div>
       )}
       <Row>
-        <Col md={3}>
+        <Col md={12}>
           <Tabs
             defaultActiveKey="Openinghours"
             onSelect={handleTabSelect}
@@ -710,6 +711,9 @@ function RestaurantAdmin() {
                   <p>Number of Tables: {restaurantData.noOfTables}</p>
                 </>
               )}
+            </Tab>
+            <Tab eventKey="reservations" title="Reservations">
+              { restaurantData?.name && <ListReservationPartnerApp restaurantName={restaurantData?.name} />}
             </Tab>
           </Tabs>
         </Col>

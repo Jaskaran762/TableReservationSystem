@@ -7,10 +7,11 @@ import {
     toggleReservationStatus
 } from "../../../../services/ReservationService";
 
-    function ListReservationPartnerApp() {
+    function ListReservationPartnerApp(restaurantName) {
+        // console.log(JSON.stringify(restaurantName["restaurantName"]));
     const [reservations, setReservations] = useState([]);
     const navigate = useNavigate();
-    const {restaurantId} = useParams();
+    const [restaurantId, setRestaurantId] = useState(restaurantName["restaurantName"]);
     useEffect(() => {
         fetchData(restaurantId);
     }, []);
