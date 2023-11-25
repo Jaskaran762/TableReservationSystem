@@ -631,8 +631,8 @@ function RestaurantAdmin() {
                     <thead>
                       <tr>
                         <th>#</th>
-                        <th>Seating Capacity (Seats per table)</th>
-                        <th>Available Tables</th>
+                        <th>Table-Number</th>
+                        <th>Capacity</th>
                       </tr>
                     </thead>
                     <tbody>

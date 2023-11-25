@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Container, Row, Col, Card, Button, Form } from 'react-bootstrap';
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import "./restaurant.css"; // Import your CSS file
@@ -65,6 +66,10 @@ function Restaurant() {
 
   const user = useSelector(selectUser);
   const username = user.user.displayName;
+  const navigateToReservation = (event,restaurantId)=>{
+    event.preventDefault();
+    navigate(`/restaurants/${restaurantId}/createReservation`);
+  }
   const handleAddReview = async (newReview, newRating) => {
     try {
       const addReviewEndpoint =
@@ -83,6 +88,80 @@ function Restaurant() {
   };
 
   return (
+      // <Container>
+      //   {res && (
+      //       <div>
+      //         <h2>{res.name}</h2>
+      //         <img src={res.photo} alt={`${res.name} Photo`} />
+      //         <p>Location: {res.location}</p>
+      //         <p>City: {res.city}</p>
+      //       </div>
+      //   )}
+      //
+      //   <h2>Menu</h2>
+      //   <Row>
+      //     {menu
+      //         ?.filter((menuItem) => menuItem.availability)
+      //         .map((menuItem, index) => (
+      //             <Col key={index} xs={12} md={4} className="mb-4">
+      //               <Card>
+      //                 <Card.Body>
+      //                   <Card.Title>{menuItem.name}</Card.Title>
+      //                   <Card.Text>Price: {menuItem.price}</Card.Text>
+      //                   <Button variant="primary" onClick={navigateToMenuReservation}>
+      //                     <img src={menuItem.image} alt={`Item ${index}`} />
+      //                   </Button>
+      //                   <Card.Text>{menuItem.discount && <p>Discount: {menuItem.discount}</p>}</Card.Text>
+      //                 </Card.Body>
+      //               </Card>
+      //             </Col>
+      //         ))}
+      //   </Row>
+      //
+      //   <h2>Reviews</h2>
+      //   <Row>
+      //     {reviews?.map((reviewItem, index) => (
+      //         <Col key={index} xs={12} md={4} className="mb-4">
+      //           <Card>
+      //             <Card.Body>
+      //               <Card.Text>Rating: {reviewItem.rating}</Card.Text>
+      //               <Card.Text>Description: {reviewItem.description}</Card.Text>
+      //               <Card.Text>Author: {reviewItem.author}</Card.Text>
+      //             </Card.Body>
+      //           </Card>
+      //         </Col>
+      //     ))}
+      //   </Row>
+      //
+      //   <h2>Add a Review</h2>
+      //   <Form
+      //       onSubmit={(e) => {
+      //         e.preventDefault();
+      //         const newReview = e.target.elements.review.value;
+      //         const newRating = e.target.elements.rating.value;
+      //         if (newReview.trim() !== "") {
+      //           handleAddReview(newReview, newRating);
+      //         }
+      //       }}
+      //   >
+      //     <Form.Group className="mb-3">
+      //       <Form.Control as="textarea" name="review" rows={4} placeholder="Write your review..." />
+      //     </Form.Group>
+      //     <Form.Group className="mb-3">
+      //       <Form.Label>Rating:</Form.Label>
+      //       <Form.Select id="numberDropdown" name="rating">
+      //         <option value="1">1</option>
+      //         <option value="2">2</option>
+      //         <option value="3">3</option>
+      //         <option value="4">4</option>
+      //         <option value="5">5</option>
+      //       </Form.Select>
+      //     </Form.Group>
+      //     <Button type="submit">Submit Review</Button>
+      //   </Form>
+      //
+      //   {error && <div>Error: {error.message}</div>}
+      // </Container>
     <div>
       {res && (
         <div>
@@ -92,6 +171,7 @@ function Restaurant() {
           <p>City: {res.city}</p>
         </div>
       )}
+      <button type="submit" onClick={ event =>  navigateToReservation(event,res.name)} >Create Reservation</button>
       <h2>Menu</h2>
       <div className="card-container">
       {menu
