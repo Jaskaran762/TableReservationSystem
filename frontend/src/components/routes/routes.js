@@ -20,6 +20,7 @@ const Router = ()=> {
     const isAuth = useSelector(selectUser);
     const loginTypeSelector = useSelector(selectLoginType);
     const navigateBasedOnAppType = ()=>{
+        console.log("loginTypeSelector=>"+loginTypeSelector?.loginType);
         if(loginTypeSelector?.loginType === "CUSTOMER"){
             return <Navigate to="/dashboard" />
         }else if (loginTypeSelector?.loginType === "PARTNER"){
@@ -48,7 +49,8 @@ const Router = ()=> {
                 </Route>
                 <Route path='/partnerAPP' element={<Landing/>}>
                     <Route index element={ isAuth ? <Navigate to="/partnerAPP/dashboard" /> : <Navigate to="/partnerAPP"/>}/>
-                    <Route path='/partnerAPP/dashboard' element={<Home/>}/>
+                    <Route path='/partnerAPP/dashboard' element={<Dashboard/>}/>
+                    <Route path='/partnerAPP/restaurants' element={<Home/>}/>
                     <Route path='/partnerAPP/restaurant' element={<RestaurantAdmin/>}/>
                     <Route path='/partnerAPP/createRestaurant' element={<CreateRestaurant/>}/>
                     <Route path='/partnerAPP/tableBooking' element={<TableBookings/>}/>
