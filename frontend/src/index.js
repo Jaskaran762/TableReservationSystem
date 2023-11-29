@@ -22,7 +22,7 @@ root.render(
   </React.StrictMode>
 );
 
-Kommunicate.init("1bbe9fd3e6802c8689da01db4317862c8", {
+Kommunicate.init("3e34ff32f8b7b5f0cf6a1d1131e3236ba", {
   automaticChatOpenOnNavigation: true,
   popupWidget: true
 });
