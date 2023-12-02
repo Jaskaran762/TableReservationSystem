@@ -1,4 +1,5 @@
 import json
+import random
 import requests
 from typing import Dict, Any
 
@@ -9,7 +10,7 @@ GET_DATA_RESTAURANT = API_URL_TEMPLATE.format("4nghc9vm23", "/get-data-restauran
 GET_MENU_RESTAURANT = API_URL_TEMPLATE.format("xf0lcrieqb", "/get-menu-restaurant")
 GET_REVIEW_RESTAURANT = API_URL_TEMPLATE.format("wgfb53q6ie", "/get-review-restaturant")
 ADD_REVIEW_RESTAURANT = API_URL_TEMPLATE.format("ch0bs0q5ek", "/add-review-restaurant")
-RESERVATIONS_URL = API_URL_TEMPLATE.format("zoonh4myj4", "/reservations")
+RESERVATIONS_URL = API_URL_TEMPLATE.rsplit("/", 1)[0].format("zoonh4myj4", "/reservations")
 
 
 def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
@@ -50,7 +51,7 @@ def handle_available_restaurants(event: Dict[str, Any]) -> Dict[str, Any]:
 
     payload = {"city": city}
     response = post_request(GET_DATA_RESTAURANT, payload)
-    if not response or len(response.get('restaurants', [])) != 0:
+    if not response or len(response.get('restaurants', [])) == 0:
         return build_response("AvailableRestaurantsIntent", event, f"No available restaurants found in {city}.")
 
     restaurant_names = [restaurant['name'] for restaurant in response['restaurants']]
@@ -114,9 +115,26 @@ def handle_restaurant_review(event: Dict[str, Any]) -> Dict[str, Any]:
     if not response or 'reviews' not in response or not response['reviews']:
         return build_response("RestaurantReviewIntent", event, f"No reviews found for {restaurant_name}.")
 
-    top_review = max(response['reviews'], key=lambda r: r['rating'])
+    reviews = response['reviews']
+    random.shuffle(reviews)
+    top_review = max(reviews, key=lambda r: int(r.get('rating', 0)))
     message = f"{restaurant_name} has a review: {top_review['description']}"
     return build_response("RestaurantReviewIntent", event, message)
+
+
+def handle_restaurant_rating(event: Dict[str, Any]) -> Dict[str, Any]:
+    restaurant_name = get_slot_value(event, 'Restaurant_Name')
+    if not restaurant_name:
+        return build_response("RestaurantRatingIntent", event, "Please specify a restaurant name.")
+
+    payload = {"name": restaurant_name}
+    response = post_request(GET_REVIEW_RESTAURANT, payload)
+    if not response or 'reviews' not in response or not response['reviews']:
+        return build_response("RestaurantRatingIntent", event, f"No ratings found for {restaurant_name}.")
+
+    highest_rating = max(response['reviews'], key=lambda r: int(r['rating']))['rating']
+    message = f"{restaurant_name} has a rating of {highest_rating}."
+    return build_response("RestaurantRatingIntent", event, message)
 
 
 def handle_push_restaurant_rating(event: Dict[str, Any]) -> Dict[str, Any]:
