@@ -1,8 +1,7 @@
 import { admin ,auth , googleProvider, db} from "../../config/firebase";
 import {signInWithEmailAndPassword, signInWithPopup, signOut} from "firebase/auth";
-import { setDoc, doc } from 'firebase/firestore';
+import { setDoc, doc,collection } from 'firebase/firestore';
 import { useState } from "react";
-import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import {login, setUserLoginType, setUserDetails} from "../redux/userSlice";
 import {useDispatch} from "react-redux";
@@ -14,12 +13,12 @@ function Auth(){
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-    const [loginType, setLoginType] = useState("CUSTOMER");
+  const [loginType, setLoginType] = useState("CUSTOMER");
 
   console.log(auth?.currentUser?.email);
     var details
 
-    // const collection = db.collection('users');
+    // db.collection('users');
 
     const dispatchLoggedInUser = (token) =>{
         dispatch(
@@ -45,15 +44,15 @@ function Auth(){
         )
     }
 
-    // const checkUserExist = (userId)=>{
-    //     return collection.doc(userId)
-    //         .get()
-    //         .then((doc)=>{
-    //             return doc.exists;
-    //         }).catch((error)=>{
-    //             return false;
-    //         });
-    // }
+    const checkUserExist = (userId)=>{
+        return collection(db,'users').doc(userId)
+            .get()
+            .then((doc)=>{
+                return doc.exists;
+            }).catch((error)=>{
+                return false;
+            });
+    }
   const signIn = async () => {
     try {
         await signInWithEmailAndPassword(auth, email, password).then((resp) => {
@@ -63,14 +62,13 @@ function Auth(){
         console.log(JSON.stringify(user));
         dispatchUserDetails(user);
         dispatchLoginType(loginType);
-        // console.log(checkUserExist(user.uid));
-        // if(!checkUserExist(user.uid)){
-        //     await setDoc(doc(db,"users",user.uid),{
-        //             email:user.email,
-        //             name:user.displayName
-        //         }
-        //     );
-        // }
+        if(!checkUserExist(user.uid)){
+            await setDoc(doc(db,"users",user.uid),{
+                    email:user.email,
+                    name:user.displayName
+                }
+            );
+        }
         // setUser(user);
         user.getIdToken()
             .then((idToken)=>{

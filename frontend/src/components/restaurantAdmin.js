@@ -22,6 +22,7 @@ import {
   ToggleButton as RBToggleButton,
   Modal,
 } from "react-bootstrap";
+import ListReservationPartnerApp from "./view/partner_app/reservations/ListReservationsPartnerApp";
 const ImageService = require("../services/uploadImageService");
 
 function RestaurantAdmin() {
@@ -316,7 +317,6 @@ function RestaurantAdmin() {
     try {
       // Update the selected image when the file input changes
       console.log(e.target.files[0]);
-      alert(e.target.files[0]);
       const file = e.target.files[0];
       const reader = new FileReader();
 
@@ -325,6 +325,7 @@ function RestaurantAdmin() {
           const imageData = reader.result; // Use reader.result instead of e.target.result
           const response = await ImageService.uploadImageData(imageData);
           setSelectedImage(response.data.message);
+          alert(selectedImage);
         } catch (uploadError) {
           // Handle error during image upload
           console.error("Error uploading image:", uploadError);
@@ -381,7 +382,7 @@ function RestaurantAdmin() {
         </div>
       )}
       <Row>
-        <Col md={3}>
+        <Col md={12}>
           <Tabs
             defaultActiveKey="Openinghours"
             onSelect={handleTabSelect}
@@ -609,7 +610,7 @@ function RestaurantAdmin() {
                       </Form>
                     </Modal.Body>
                     <Modal.Footer>
-                      <Button
+                      <Button 
                         variant="secondary"
                         onClick={handleCloseAddFoodModal}
                       >
@@ -630,8 +631,8 @@ function RestaurantAdmin() {
                     <thead>
                       <tr>
                         <th>#</th>
-                        <th>Seating Capacity (Seats per table)</th>
-                        <th>Available Tables</th>
+                        <th>Table-Number</th>
+                        <th>Capacity</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -710,6 +711,9 @@ function RestaurantAdmin() {
                   <p>Number of Tables: {restaurantData.noOfTables}</p>
                 </>
               )}
+            </Tab>
+            <Tab eventKey="reservations" title="Reservations">
+              { restaurantData?.name && <ListReservationPartnerApp restaurantName={restaurantData?.name} />}
             </Tab>
           </Tabs>
         </Col>

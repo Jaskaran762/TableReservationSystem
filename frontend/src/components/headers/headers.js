@@ -2,9 +2,10 @@ import { Container, Navbar, Nav } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import {logout, selectLoginType, selectUser} from '../redux/userSlice';
-import { useNavigate } from 'react-router-dom';
+import {Navigate, useNavigate} from 'react-router-dom';
 import {signOut} from "firebase/auth";
 import {auth} from "../../config/firebase";
+import React from "react";
 
 const Header = () => {
     const isAuth = useSelector(selectUser);
@@ -40,7 +41,19 @@ const Header = () => {
             return "";
         }
     }
-
+    const navigateBasedOnAppType = ()=>{
+        console.log("loginTypeSelector=>"+loginTypeSelector?.loginType);
+        if(loginTypeSelector?.loginType === "CUSTOMER"){
+            return
+            <LinkContainer to='/dashboard'>
+                <Nav.Link>Dashboard</Nav.Link>
+            </LinkContainer>
+        }else if (loginTypeSelector?.loginType === "PARTNER"){
+            return  <LinkContainer to='/partnerAPP/dashboard"'>
+                <Nav.Link>Dashboard</Nav.Link>
+            </LinkContainer>
+        }
+    }
     return (
         <header>
             <Navbar bg="dark" variant="dark" expand="lg" >
@@ -63,9 +76,7 @@ const Header = () => {
                             (
                                 <>
                                     <Nav className='ms-auto'>
-                                        <LinkContainer to='/dashboard'>
-                                            <Nav.Link>Dashboard</Nav.Link>
-                                        </LinkContainer>
+                                        {navigateBasedOnAppType()}
                                     </Nav>
 
                                     <Nav className='ms-auto'>

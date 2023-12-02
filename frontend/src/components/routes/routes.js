@@ -9,15 +9,18 @@ import Dashboard from "../dashboard/dashboard";
 import ListReservations from "../view/Reservations/ListReservations";
 import ReservationForm from "../view/Reservations/ReservationForm";
 import Restaurant from "../restaurant";
+import ListReservationsPartnerApp from "../view/partner_app/reservations/ListReservationsPartnerApp";
 import RestaurantAdmin from '../restaurantAdmin';
 import CreateRestaurant from '../createRestaurant';
 import MenuSelection from '../MenuSelection';
 import ReservedMenuPage from '../ReservedMenuPage';
+import TableBookings from '../TableBookings';
 
 const Router = ()=> {
     const isAuth = useSelector(selectUser);
     const loginTypeSelector = useSelector(selectLoginType);
     const navigateBasedOnAppType = ()=>{
+        console.log("loginTypeSelector=>"+loginTypeSelector?.loginType);
         if(loginTypeSelector?.loginType === "CUSTOMER"){
             return <Navigate to="/dashboard" />
         }else if (loginTypeSelector?.loginType === "PARTNER"){
@@ -46,9 +49,12 @@ const Router = ()=> {
                 </Route>
                 <Route path='/partnerAPP' element={<Landing/>}>
                     <Route index element={ isAuth ? <Navigate to="/partnerAPP/dashboard" /> : <Navigate to="/partnerAPP"/>}/>
-                    <Route path='/partnerAPP/dashboard' element={<Home/>}/>
+                    <Route path='/partnerAPP/dashboard' element={<Dashboard/>}/>
+                    <Route path='/partnerAPP/restaurants' element={<Home/>}/>
                     <Route path='/partnerAPP/restaurant' element={<RestaurantAdmin/>}/>
                     <Route path='/partnerAPP/createRestaurant' element={<CreateRestaurant/>}/>
+                    <Route path='/partnerAPP/tableBooking' element={<TableBookings/>}/>
+                    <Route path='/partnerAPP/restaurant/:restaurantId/reservations' element={<ListReservationsPartnerApp/>}/>
                 </Route>
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>

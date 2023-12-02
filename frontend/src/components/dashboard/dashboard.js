@@ -13,8 +13,10 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import {Link, Navigate, Route, useNavigate} from 'react-router-dom';
+import {selectLoginType} from "../redux/userSlice";
 
-const dashboard = () => {
+const Dashboard = () => {
+    const loginType = useSelector(selectLoginType);
     return (
         <>
             <CardGroup>
@@ -31,19 +33,21 @@ const dashboard = () => {
                         </Link>
                     </CardBody>
                 </Card>
-                <Card style={{ width: '18rem' }}>
-                    {/*<Card.Img variant="top" src="holder.js/100px180" />*/}
-                    <CardBody>
-                        <CardTitle>Reservations</CardTitle>
-                        <CardText>
-                            Some quick example text to build on the card title and make up the
-                            bulk of the card's content.
-                        </CardText>
-                        <Link to="/reservations">
-                            <Button variant="primary" >View Reservations</Button>
-                        </Link>
-                    </CardBody>
-                </Card>
+                { loginType.loginType =="CUSTOMER" &&
+                    <Card style={{ width: '18rem' }}>
+                        {/*<Card.Img variant="top" src="holder.js/100px180" />*/}
+                        <CardBody>
+                            <CardTitle>Reservations</CardTitle>
+                            <CardText>
+                                Some quick example text to build on the card title and make up the
+                                bulk of the card's content.
+                            </CardText>
+                            <Link to="/reservations">
+                                <Button variant="primary" >View Reservations</Button>
+                            </Link>
+                        </CardBody>
+                    </Card>
+                }
                 <Card style={{ width: '18rem' }}>
                     {/*<Card.Img variant="top" src="holder.js/100px180" />*/}
                     <CardBody>
@@ -58,9 +62,26 @@ const dashboard = () => {
                         {/*<Button variant="primary" onClick={e => navigate('/restaurants')} >View Restaurants</Button>*/}
                     </CardBody>
                 </Card>
+                {
+                    loginType.loginType == "PARTNER" &&
+                <Card style={{ width: '18rem' }}>
+                    {/*<Card.Img variant="top" src="holder.js/100px180" />*/}
+                    <CardBody>
+                        <CardTitle>Tables Booked</CardTitle>
+                        <CardText>
+                        View tables booked at time intervals in daily, weekly, and monthly views.
+                        </CardText>
+                        <Link to="/partnerAPP/tableBooking">
+                            <Button variant="primary" >View</Button>
+                        </Link>
+                        {/*<Button variant="primary" onClick={e => navigate('/restaurants')} >View Restaurants</Button>*/}
+                    </CardBody>
+                </Card>
+                }
+
             </CardGroup>
         </>
     )
 }
 
-export default dashboard;
+export default Dashboard;

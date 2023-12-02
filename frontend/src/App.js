@@ -10,9 +10,12 @@ import Reservation from "./components/Reservation";
 import PageRoutes from './components/routes/routes';
 import {Container} from "react-bootstrap";
 import Header from "./components/headers/headers";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import MenuSelection from './components/MenuSelection';
 import ReservedMenuPage from './components/ReservedMenuPage';
 import Restaurant from './components/restaurant';
+import {AxiosConfig} from "./services/axiosInstance";
 
 function App() {
   return (
@@ -36,12 +39,24 @@ function App() {
  
       // <div className='App' >
           <Router>
-              <Container style={{maxWidth:'100vm',padding:0}}>
                   <Header/>
+              <AxiosConfig>
                   <PageRoutes/>
-              </Container>
+              </AxiosConfig>
+              <ToastContainer
+                  position="top-right"
+                  autoClose={5000}
+                  hideProgressBar={false}
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme="light"
+              />
+              <ToastContainer />
           </Router>
-      // </div>
   );
 }
 
