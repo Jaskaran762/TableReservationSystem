@@ -1,5 +1,5 @@
 import {React, useEffect, useState} from 'react';
-import {useLocation,useParams} from "react-router-dom";
+import {navigate, useLocation, useNavigate, useParams} from "react-router-dom";
 import SlotButton from "../UtilComponents/SlotButton";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import {auth} from "../../../config/firebase";
@@ -17,6 +17,7 @@ function ReservationForm() {
     const [tables, setTables] = useState({});
     const [selectedSlot, setSelectedSlot] = useState({});
     const [isOwner,setOwner] = useState(false);
+    const navigate = useNavigate();
 
     const [restaurantData,setRestaurantData] = useState({});
     console.log("state->");
@@ -39,6 +40,11 @@ function ReservationForm() {
     const isReadOnly = () => {
 
     }
+    // const navigateToReservations = (event,restaurantId)=>{
+    //     event.preventDefault();
+    //     navigate(`/restaurants`);
+    // }
+
     useEffect(()=>{
         fetchAvailableSlots(formData,selectedTable);
     },[selectedTable]);
@@ -228,7 +234,9 @@ function ReservationForm() {
                         progress: undefined,
                         theme: "light",
                     });
+                    navigate("/reservations");
                     console.log("Reservation updated!");
+
                 } else {
                     toast.error('Failed to update reservation!', {
                         position: "top-right",
@@ -277,6 +285,7 @@ function ReservationForm() {
                         theme: "light",
                     });
                     console.log("Reservation Saved!");
+                    navigate("/reservations");
                 } else {
                     toast.error('Failed to create Reservation!', {
                         position: "top-right",
