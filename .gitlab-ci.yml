@@ -1,0 +1,29 @@
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  image: node:latest
+  script:
+    - npm install
+    - npm run build
+  artifacts:
+    paths:
+      - build
+    expire_in: 1 hour
+
+test:
+  stage: test
+  image: node:latest
+  script:
+    - npm install
+    - npm run test
+
+deploy:
+  stage: deploy
+  image: node:latest
+  script:
+    - npm install -g firebase-tools
+    - firebase deploy --only hosting --token $FIREBASE_TOKEN
