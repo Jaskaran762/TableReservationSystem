@@ -11,7 +11,8 @@ import { selectUser } from "./redux/userSlice";
 function Restaurant() {
   const navigate = useNavigate();
   const navigateToMenuReservation = () => {
-    navigate("/menu-selection");
+    console.log("restaurantName",restaurantName);
+    navigate("/menu-selection", { state: { name: restaurantName } });
   };
   const [restaurantInfo, setRestaurantInfo] = useState({});
   const [res, setRes] = useState({});
@@ -180,7 +181,7 @@ function Restaurant() {
           <div key={index} className="card">
             <p>Name: {menuItem.name}</p>
             <p>Price: {menuItem.price}</p>
-            <button onClick={navigateToMenuReservation}>
+            <button onClick={() => navigateToMenuReservation(res.name)}>
               <img src={menuItem.image} alt={`Item ${index}`} />
             </button>
             <p>Price: {menuItem.price}</p>
