@@ -324,7 +324,6 @@ function RestaurantAdmin() {
           const imageData = reader.result; // Use reader.result instead of e.target.result
           const response = await ImageService.uploadImageData(imageData);
           setSelectedImage(response.data.message);
-          alert(selectedImage);
         } catch (uploadError) {
           // Handle error during image upload
           console.error("Error uploading image:", uploadError);
