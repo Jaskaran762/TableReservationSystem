@@ -18,6 +18,7 @@ import TableBookings from '../TableBookings';
 import AdminDashboard from "../admin/AdminDashboard";
 import Top10RestaurantOrders from "../admin/Top10RestaurantOrders";
 import ReviewsOfRestaurant from '../admin/ReviewsOfRestaurant';
+import Top10FoodItems from "../admin/Top10FoodItems";
 
 const Router = ()=> {
     const isAuth = useSelector(selectUser);
@@ -64,6 +65,7 @@ const Router = ()=> {
                     <Route path='/AdminApp/dashboard' element={<AdminDashboard/>}/>
                     <Route path='/AdminApp/Top10RestaurantOrders' element={<Top10RestaurantOrders/>}/>
                     <Route path='/AdminApp/ReviewsOfRestaurant' element={<ReviewsOfRestaurant/>}/>
+                    <Route path='/AdminApp/Top10FoodItems' element={<Top10FoodItems/>}/>
                 </Route>
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>

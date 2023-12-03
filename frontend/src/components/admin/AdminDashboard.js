@@ -43,6 +43,17 @@ const AdminDashboard = () => {
                         </Link>
                     </CardBody>
                 </Card>
+                <Card style={{ width: '18rem' }}>
+                    <CardBody>
+                        <CardTitle>Top 10 Food items Ordered across Restaurants </CardTitle>
+                        <CardText>
+                            The Chart shows top 10 food items ordered across Restaurants
+                        </CardText>
+                        <Link to="/AdminApp/Top10FoodItems">
+                            <Button variant="primary" >View Chart</Button>
+                        </Link>
+                    </CardBody>
+                </Card>
             </CardGroup>
         </>
     )
