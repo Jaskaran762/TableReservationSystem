@@ -57,9 +57,9 @@ const AdminDashboard = () => {
 
                 <Card style={{ width: '18rem' }}>
                     <CardBody>
-                        <CardTitle> The top 10 customers who have ordered the most </CardTitle>
+                        <CardTitle> The top 10 periods when the food is most ordered </CardTitle>
                         <CardText>
-                            The Chart shows top 10 customers who ordered most across Restaurants
+                            The top 10 periods when the food is most ordered
                         </CardText>
                         <Link to="/AdminApp/Top10Periods">
                             <Button variant="primary" >View Chart</Button>

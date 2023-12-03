@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Iframe from "react-iframe";
 
-function Top10CustomerOrders() {
+function Top10PeriodsWhenOrdered() {
     const iframeStyle = {
         width: '600px',
         height: '450px',
@@ -20,4 +20,4 @@ function Top10CustomerOrders() {
     );
 }
 
-export default Top10CustomerOrders;
+export default Top10PeriodsWhenOrdered;
