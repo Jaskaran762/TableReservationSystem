@@ -54,6 +54,17 @@ const AdminDashboard = () => {
                         </Link>
                     </CardBody>
                 </Card>
+                <Card style={{ width: '18rem' }}>
+                    <CardBody>
+                        <CardTitle>Top 10 Customers who have have ordered the most</CardTitle>
+                        <CardText>
+                            The Chart shows top 10 customers who have have ordered the most
+                        </CardText>
+                        <Link to="/AdminApp/Top10Customers">
+                            <Button variant="primary" >View Chart</Button>
+                        </Link>
+                    </CardBody>
+                </Card>
 
                 <Card style={{ width: '18rem' }}>
                     <CardBody>
