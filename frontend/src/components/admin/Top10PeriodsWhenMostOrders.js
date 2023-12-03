@@ -10,7 +10,7 @@ function Top10CustomerOrders() {
 
     return (
         <Iframe
-            url="https://lookerstudio.google.com/embed/reporting/345d5f9c-15pa-7p91-m277-1pahj49916j1/page/nc5iM"
+            url="https://lookerstudio.google.com/embed/reporting/e2b0ce57-2d21-4bbd-af6f-80ec3d10bbfb/page/377jD"
             width="600"
             height="450"
             frameBorder="0"

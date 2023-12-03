@@ -61,7 +61,7 @@ const AdminDashboard = () => {
                         <CardText>
                             The Chart shows top 10 customers who ordered most across Restaurants
                         </CardText>
-                        <Link to="/AdminApp/Top10FoodItems">
+                        <Link to="/AdminApp/Top10Periods">
                             <Button variant="primary" >View Chart</Button>
                         </Link>
                     </CardBody>
