@@ -27,6 +27,8 @@ const Router = ()=> {
             return <Navigate to="/dashboard" />
         }else if (loginTypeSelector?.loginType === "PARTNER"){
             return <Navigate to="/partnerAPP/dashboard"/>
+        }else if(loginTypeSelector?.loginType === "ADMIN"){
+            return <Navigate to="/AdminApp"/>
         }
     }
     // console.log("is Auth ->"+ isAuth);
@@ -59,7 +61,7 @@ const Router = ()=> {
                     <Route path='/partnerAPP/restaurant/:restaurantId/reservations' element={<ListReservationsPartnerApp/>}/>
                 </Route>
                 <Route path='/AdminApp' element={<Landing/>}>
-                    {/*<Route index element={ isAuth ? <Navigate to="/AdminApp/dashboard" /> : <Navigate to="/AdminApp"/>}/>*/}
+                    <Route index element={ isAuth ? <Navigate to="/AdminApp/dashboard" /> : <Navigate to="/AdminApp"/>}/>
                     <Route path='/AdminApp/dashboard' element={<AdminDashboard/>}/>
                     <Route path='/AdminApp/Top10RestaurantOrders' element={<Top10RestaurantOrders/>}/>
                 </Route>

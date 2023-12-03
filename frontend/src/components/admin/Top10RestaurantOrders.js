@@ -13,7 +13,8 @@ function Top10RestaurantOrders() {
                 id=""
                 className=""
                 display="block"
-                position="relative"/>
+                position="relative"
+                allowFullScreen={true}/>
     );
 }
 

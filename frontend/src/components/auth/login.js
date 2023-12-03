@@ -1,12 +1,13 @@
 import { admin ,auth , googleProvider, db} from "../../config/firebase";
 import {signInWithEmailAndPassword, signInWithPopup, signOut} from "firebase/auth";
-import { setDoc, doc,collection } from 'firebase/firestore';
+import {setDoc, doc, collection, getDocs, query, where} from 'firebase/firestore';
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import {login, setUserLoginType, setUserDetails} from "../redux/userSlice";
 import {useDispatch} from "react-redux";
 import 'bootstrap/dist/css/bootstrap.css';
 import {Button, ButtonGroup, Form} from "react-bootstrap";
+import {toast} from "react-toastify";
 
 function Auth(){
   const navigate = useNavigate();
@@ -44,6 +45,24 @@ function Auth(){
         )
     }
 
+    const checkAdminAccess = async (userId)=>{
+            const myCollection = collection(db, 'admins');
+            const field = 'email';
+            const value = userId;
+            const q = query(myCollection, where(field, '==', value));
+            let userExist = false;
+            try{
+                const querySnapShot = await getDocs(q);
+                for (const doc of querySnapShot.docs) {
+                    console.log("Checking user Exist in Admins or not=> " + doc.exists());
+                    return doc.exists();
+                }
+                return false;
+            }catch (error){
+                console.error('Error getting documents: ', error);
+                return false;
+            }
+    }
     const checkUserExist = (userId)=>{
         return collection(db,'users').doc(userId)
             .get()
@@ -55,11 +74,19 @@ function Auth(){
     }
   const signIn = async () => {
     try {
+        if(loginType === "ADMIN"){
+            var checkAdminAccessExist = await checkAdminAccess(email);
+            if(!checkAdminAccessExist){
+                toast.error("Don't Have Admin Access")
+                return;
+            }
+        }
         await signInWithEmailAndPassword(auth, email, password).then((resp) => {
         details = resp;
     });
         var user = details.user;
         console.log(JSON.stringify(user));
+        // if(user.email)
         dispatchUserDetails(user);
         dispatchLoginType(loginType);
         if(!checkUserExist(user.uid)){
@@ -84,10 +111,27 @@ function Auth(){
 
   const signInWithGoogle = async () => {
     try {
+
      await signInWithPopup(auth,googleProvider).then((resp) =>{
         details = resp;
     });
     var user = details.user;
+    if(loginType === "ADMIN"){
+            var checkAdminAccessExist = await checkAdminAccess(user.email);
+            if(!checkAdminAccessExist){
+                toast.error("Don't Have Admin Access")
+                return;
+            }
+    }
+    // if(user.email)
+    // {
+    //     if(loginType == "ADMIN"){
+    //         if(!checkAdminAccess(email)){
+    //             toast.error("Don't Have Admin Access")
+    //             return;
+    //         }
+    //     }
+    // }
         console.log(JSON.stringify(user));
         dispatchUserDetails(user);
         dispatchLoginType(loginType);
@@ -134,6 +178,7 @@ function Auth(){
               <Form.Select onChange={(e) => setLoginType(e.target.value)}>
                   <option value="CUSTOMER">Customer</option>
                   <option value="PARTNER">Partner</option>
+                  <option value="ADMIN">Admin</option>
               </Form.Select>
           </Form.Group>
           <Form.Group>
