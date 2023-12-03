@@ -37,6 +37,8 @@ const Header = () => {
             return "(Customer App)";
         }else if(loginTypeSelector?.loginType === "PARTNER"){
             return "(Partner App)";
+        }else if(loginTypeSelector?.loginType === "ADMIN"){
+            return "(Admin App)";
         }else{
             return "";
         }
@@ -50,6 +52,10 @@ const Header = () => {
             </LinkContainer>
         }else if (loginTypeSelector?.loginType === "PARTNER"){
             return  <LinkContainer to='/partnerAPP/dashboard"'>
+                <Nav.Link>Dashboard</Nav.Link>
+            </LinkContainer>
+        }else if(loginTypeSelector?.loginType === "ADMIN"){
+            return <LinkContainer to='/partnerAPP/dashboard"'>
                 <Nav.Link>Dashboard</Nav.Link>
             </LinkContainer>
         }

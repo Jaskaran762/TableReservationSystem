@@ -1,0 +1,2 @@
+const existingRestaurantQuery = await restaurantsCollection.where('name', '==', restaurantName).get();
+
