@@ -15,6 +15,8 @@ import CreateRestaurant from '../createRestaurant';
 import MenuSelection from '../MenuSelection';
 import ReservedMenuPage from '../ReservedMenuPage';
 import TableBookings from '../TableBookings';
+import AdminDashboard from "../admin/AdminDashboard";
+import Top10RestaurantOrders from "../admin/Top10RestaurantOrders";
 
 const Router = ()=> {
     const isAuth = useSelector(selectUser);
@@ -55,6 +57,11 @@ const Router = ()=> {
                     <Route path='/partnerAPP/createRestaurant' element={<CreateRestaurant/>}/>
                     <Route path='/partnerAPP/tableBooking' element={<TableBookings/>}/>
                     <Route path='/partnerAPP/restaurant/:restaurantId/reservations' element={<ListReservationsPartnerApp/>}/>
+                </Route>
+                <Route path='/AdminApp' element={<Landing/>}>
+                    {/*<Route index element={ isAuth ? <Navigate to="/AdminApp/dashboard" /> : <Navigate to="/AdminApp"/>}/>*/}
+                    <Route path='/AdminApp/dashboard' element={<AdminDashboard/>}/>
+                    <Route path='/AdminApp/Top10RestaurantOrders' element={<Top10RestaurantOrders/>}/>
                 </Route>
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
