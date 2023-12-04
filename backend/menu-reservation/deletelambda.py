@@ -9,12 +9,12 @@ def lambda_handler(event, context):
         data = json.loads(event['body'])
 
         # Extract the reservation ID and menu ID from the request
-        reservation_id = data.get('ReservId', '')
+        user_name = data.get('UserName', '')
         menu_name = data.get('MenuName', '')
 
          # Specify the key to identify the item to be deleted
         key = {
-            'ReservId': { 'S': reservation_id },
+            'UserName': { 'S': user_name },
             'MenuName': { 'S': menu_name }
         }
 
@@ -32,4 +32,4 @@ def lambda_handler(event, context):
         return {
             'statusCode': 500,
             'body': json.dumps({'message': 'Internal Server Error', 'error': str(e)})
-        }   
+        }

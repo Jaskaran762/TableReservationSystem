@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation  } from 'react-router-dom';
+import { useSelector } from "react-redux";
+import { selectUser } from "./redux/userSlice";
 
 const ReservedMenuPage = () => {
   const [reservedMenu, setReservedMenu] = useState([]);
@@ -9,7 +11,8 @@ const ReservedMenuPage = () => {
 
   const navigate = useNavigate();
   const location = useLocation(); // Import useLocation from react-router-dom
-
+  const user = useSelector(selectUser);
+  const username = user.user.displayName;
 
   useEffect(() => {
     // Fetch reserved menu items when the component mounts
@@ -54,7 +57,7 @@ const ReservedMenuPage = () => {
 
     const data = {
       MenuName: menuItem,
-      ReservId: '101',
+      UserName: username,
     };
 
     fetch(apiUrl, {

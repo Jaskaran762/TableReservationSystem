@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectUser } from "./redux/userSlice";
 
 const MenuSelection = () => {
   const navigate = useNavigate();
@@ -9,6 +11,8 @@ const MenuSelection = () => {
   console.log("location",location.state);
   const restaurantName=location.state.name;
   const [menuItems, setMenuItems] = useState([]);
+  const user = useSelector(selectUser);
+  const username = user.user.displayName;
 
   useEffect(() => {
     // Fetch menu items based on the restaurantName
@@ -33,8 +37,8 @@ const MenuSelection = () => {
       const apiUrl = 'https://b3j8h2ax0l.execute-api.us-east-1.amazonaws.com/add';
       const data = {
         MenuName: selectedMenuItem.name,
-        ReservId: '101',
-        UserId: '1',
+        RestaurantName: restaurantName,
+        UserName: username,
         Quantity: selectedMenuItem.quantity || 0,
       };
 
