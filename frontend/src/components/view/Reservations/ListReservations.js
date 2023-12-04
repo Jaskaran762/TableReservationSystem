@@ -20,6 +20,9 @@ function ReservationList() {
         const updateUrl = `/restaurants/${restaurantId}/createReservation?isUpdate=true&reservationId=${reservationId}`;
         navigate(updateUrl);
     };
+    const handleAddMenuClick = (restaurantName, reservationId) => {
+        navigate('/menu-selection', { state: { name: restaurantName, id: reservationId } });
+      };
     return (
         <div className="container my-4">
             <h2 className="text-center mb-4">Registration List</h2>
@@ -57,6 +60,14 @@ function ReservationList() {
                                 }
                             >
                                 Update
+                            </Button>
+                            <Button
+                                variant="info"
+                                onClick={() =>
+                                handleAddMenuClick(registration.restaurantId, registration.documentId)
+                                }
+                            >
+                                Add Menu
                             </Button>
                         </td>
                     </tr>

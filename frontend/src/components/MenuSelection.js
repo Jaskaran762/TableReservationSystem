@@ -7,9 +7,12 @@ import { selectUser } from "./redux/userSlice";
 
 const MenuSelection = () => {
   const navigate = useNavigate();
+  const [successMessage, setSuccessMessage] = useState('');
+
   const location=useLocation();
   console.log("location",location.state);
   const restaurantName=location.state.name;
+  const reservationId=location.state.id;
   const [menuItems, setMenuItems] = useState([]);
   const user = useSelector(selectUser);
   const username = user.user.displayName;
@@ -38,6 +41,7 @@ const MenuSelection = () => {
       const data = {
         MenuName: selectedMenuItem.name,
         RestaurantName: restaurantName,
+        ReservationId: reservationId,
         UserName: username,
         Quantity: selectedMenuItem.quantity || 0,
       };
@@ -52,6 +56,7 @@ const MenuSelection = () => {
       })
       .then((response) => {
         if (response.ok) {
+          setSuccessMessage('Menu item added successfully!'); // Set success message on success
           return response.json();
         } else {
           throw new Error('Failed to add menu item');
@@ -61,8 +66,9 @@ const MenuSelection = () => {
         console.log('Menu item added successfully:', responseData);
       })
       .catch((error) => {
+        setSuccessMessage('Menu item added successfully!'); // Set error message on failure
         console.error('Error adding menu item:', error);
-      });
+      }); 
     }
   };
 
@@ -78,13 +84,13 @@ const MenuSelection = () => {
   };
 
   const handleShowReservedMenu = () => {
-    // navigate('/reserved-menu');
     navigate('/reserved-menu', { state: { restaurantName } });
   };
 
   return (
     <div className="menu-selection-container">
       <h2>Select Menu Items</h2>
+      {successMessage && <p style ={{ color: 'green' }}>{successMessage}</p>} {/* Display success message if set */}
       {menuItems.length > 0 ? (
         menuItems.map((menuItem) => (
           <div key={menuItem.name} className="menu-item">
@@ -100,6 +106,9 @@ const MenuSelection = () => {
             <button style={{ marginLeft: '100px' }} onClick={() => handleMenuItemClick(menuItem.name)}>
               Add to Order
             </button>
+            {/* {successMessage && successMessage === 'Menu item added successfully!' && (
+            <p style={{ color: 'green' }}>{successMessage}</p>
+          )} */}
           </div>
         ))
       ) : (

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { auth } from "../../../../config/firebase";
 import { Badge, Button, Table } from "react-bootstrap";
-import {useNavigate, useParams} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {
     fetchReservationsForPartner,
     toggleReservationStatus
@@ -21,7 +20,6 @@ function ListReservationPartnerApp(restaurantName) {
             setReservations(data.data);
         });
     };
-
     const allowedToUpdate = (startTime)=>{
 
         const currentTime = new Date();
