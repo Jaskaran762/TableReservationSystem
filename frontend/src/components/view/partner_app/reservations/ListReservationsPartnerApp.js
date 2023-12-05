@@ -88,7 +88,9 @@ function ListReservationPartnerApp(restaurantName) {
                         </td>
                         <td>
                             {/*{!reservation.isAcceptedByRestaurant && (*/}
-                            {allowedToUpdate(`${reservation.date} ${reservation.timeSlot.start}`) ?
+                            {
+                                allowedToUpdate(`${reservation.date} ${reservation.timeSlot.start}`)
+                                    ?
 
                                 <Button
                                     variant={reservation.isAcceptedByRestaurant ? "danger":"success"}

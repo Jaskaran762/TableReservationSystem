@@ -22,6 +22,7 @@ function Auth(){
     // db.collection('users');
 
     const dispatchLoggedInUser = (token) =>{
+        console.log("Id Token->"+token);
         dispatch(
             login({
                 token: token
@@ -89,6 +90,12 @@ function Auth(){
         // if(user.email)
         dispatchUserDetails(user);
         dispatchLoginType(loginType);
+        user.getIdToken()
+            .then((idToken)=>{
+                console.log("JWT Token=>"+ idToken);
+                // setToken(idToken);
+                dispatchLoggedInUser(idToken);
+            });
         if(!checkUserExist(user.uid)){
             await setDoc(doc(db,"users",user.uid),{
                     email:user.email,
@@ -97,12 +104,6 @@ function Auth(){
             );
         }
         // setUser(user);
-        user.getIdToken()
-            .then((idToken)=>{
-                console.log("JWT Token=>"+ idToken);
-                // setToken(idToken);
-                dispatchLoggedInUser(idToken);
-            });
     navigate('/home');
     } catch (err){
       console.error(err);

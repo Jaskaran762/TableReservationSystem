@@ -12,6 +12,7 @@ import com.amazonaws.services.secretsmanager.model.GetSecretValueResult;
 import com.example.reservationservice.entity.Reservation;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.FirebaseApp;
@@ -38,9 +39,11 @@ public class CreateReservation implements RequestHandler<APIGatewayProxyRequestE
         Reservation reservation = gson.fromJson(requestBody, Reservation.class);
         logger.log("Reservation=>"+reservation);
         Firestore firebaseDatabase = FirestoreClient.getFirestore();
-        ApiFuture<WriteResult> collectionApiFuture = firebaseDatabase.collection(COLLECTION_NAME).document().set(reservation);
+        DocumentReference documentReference = firebaseDatabase.collection(COLLECTION_NAME).document();
+        ApiFuture<WriteResult> collectionApiFuture = documentReference.set(reservation);
         try {
             logger.log("Saved at->"+collectionApiFuture.get().getUpdateTime());
+            createTableReservationNotification(reservation,documentReference.getId());
             responseEvent.setStatusCode(201);
             responseEvent.setBody(collectionApiFuture.get().getUpdateTime().toString());
         } catch (Exception e) {
@@ -84,5 +87,30 @@ public class CreateReservation implements RequestHandler<APIGatewayProxyRequestE
                                     return com.google.cloud.Timestamp.ofTimeSecondsAndNanos(seconds,nanoseconds);
                                 })
                 .create();
+    }
+
+    public void createTableReservationNotification(Reservation reservation,String id){
+        System.out.println("Setting up Notification");
+
+        StringBuilder message = new StringBuilder();
+        message.append(" Dear Partner,");
+        message.append(" A Customer has reserved a table at your Restaurant ");
+        message.append(" \n Date : " + reservation.getDate());
+        message.append(" \n From : " + reservation.getTimeSlot().getStart());
+        message.append(" \n To : " + reservation.getTimeSlot().getEnd());
+        message.append(" \n Number of Person : "+reservation.getNumberOfPerson());
+
+    SQSNotificationData sqsNotificationData =
+        SQSNotificationData.builder().date(reservation.getDate())
+                .email(reservation.getUserId())
+                .type("REGULAR")
+                .from("Reservation")
+                .subject("New Reservation Added!")
+                .id(id)
+                .message(message.toString())
+                .time(reservation.getTimeSlot().getStart())
+                .build();
+
+    SQSNotificationData.sendNotification(sqsNotificationData);
     }
 }

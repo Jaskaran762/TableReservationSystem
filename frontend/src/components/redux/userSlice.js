@@ -14,7 +14,12 @@ export const userSlice = createSlice({
         login: (state, action) => {
             console.log("Action Payload:"+action.payload);
             state.token = action.payload;
-        },setUserDetails:(state,action)=>{
+            console.log("The Token has been set")
+        }, setToken:(state, action) =>{
+            console.log("Set Token Called!");
+            console.log(action.payload);
+        }
+    ,setUserDetails:(state,action)=>{
             console.log("Setting up User details;");
             state.user = action.payload;
         },setUserLoginType:(state,action)=>{

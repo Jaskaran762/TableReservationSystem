@@ -36,7 +36,13 @@ public class NotificationScheduler implements RequestHandler<SQSEvent,Object> {
                 context.getLogger().log("Regular Message Came with-> ");
                 context.getLogger().log(body.toString());
                 callSendEmailLambdaFunction(body);
-            }else{
+            }else if (body.containsKey("type") && body.get("type").equals("RESTAURANT-NOTIFIER")){
+                System.out.println("RESTAURANT-NOTIFIER");
+                System.out.println("Body->"+body);
+                RestaurantNotificationSender restaurantNotificationSender = new RestaurantNotificationSender();
+                restaurantNotificationSender.scheduleNotificationRegardingReservation(body.get("id"),body.get("email"));
+            }
+            else{
                 SchedulerClient client = SchedulerClient.builder()
                         .credentialsProvider(DefaultCredentialsProvider.create())
                         .region(Region.US_EAST_1)
@@ -60,6 +66,9 @@ public class NotificationScheduler implements RequestHandler<SQSEvent,Object> {
             if(body.get("type").equals("SCHEDULED")){
                 body.put("type","REGULAR");
             }
+            if(body.get("from").equals("RESTAURANT-NOTIFIER")){
+                body.put("type","RESTAURANT-NOTIFIER");
+            }
             CreateScheduleRequest createScheduleRequest = CreateScheduleRequest.builder()
                     .name(body.get("id")+body.get("from"))
                     .state(ScheduleState.ENABLED)
@@ -78,7 +87,6 @@ public class NotificationScheduler implements RequestHandler<SQSEvent,Object> {
     }
     public void deleteOldEventIfExist(SchedulerClient client, Map<String,String> body){
         if(body.containsKey("id") && body.containsKey("message") && body.containsKey("email") && body.containsKey("from")){
-
             if(checkNotificationAlreadyExistInEventBridge(client, body)){
                 DeleteScheduleRequest deleteScheduleRequest = DeleteScheduleRequest.builder()
                         .name(body.get("id")+body.get("from")).build();

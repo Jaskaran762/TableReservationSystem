@@ -1,7 +1,7 @@
 import { Container, Navbar, Nav } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
-import {logout, selectLoginType, selectUser} from '../redux/userSlice';
+import {logout, selectLoginType, selectUser, selectUserToken} from '../redux/userSlice';
 import {Navigate, useNavigate} from 'react-router-dom';
 import {signOut} from "firebase/auth";
 import {auth} from "../../config/firebase";
@@ -9,8 +9,11 @@ import React from "react";
 
 const Header = () => {
     const isAuth = useSelector(selectUser);
+    console.log("Here is your token")
+    console.log(JSON.stringify(useSelector(selectUserToken)));
     const loginTypeSelector = useSelector(selectLoginType);
     console.log(isAuth);
+
     console.log("LoginType=>"+loginTypeSelector);
     const dispatch = useDispatch();
     const navigate = useNavigate();
