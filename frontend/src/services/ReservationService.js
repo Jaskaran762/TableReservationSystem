@@ -46,7 +46,7 @@ const updateReservation = async (documentId,data) =>{
 
 const toggleReservationStatus = async (documentId,reservation) =>{
     reservation.isAcceptedByRestaurant = !reservation.isAcceptedByRestaurant;
-    return axiosInstance.put(`https://zoonh4myj4.execute-api.us-east-1.amazonaws.com/reservations/${documentId}`,reservation);
+    return axiosInstance.put(`https://zoonh4myj4.execute-api.us-east-1.amazonaws.com/reservations/${documentId}?from=statusToggle`,reservation);
 }
 
 export {createReservation,fetchReservations,fetchReservation

@@ -1,6 +1,6 @@
 import Auth from '../auth/login';
 import { useSelector } from "react-redux";
-import {selectLoginType, selectUser} from "../redux/userSlice";
+import {selectLoginType, selectUser, selectUserToken} from "../redux/userSlice";
 import Landing from "../view/Landing/landing";
 import Home from "../home";
 import {Navigate, Route, Routes} from "react-router-dom";
