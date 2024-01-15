@@ -12,6 +12,7 @@ function Restaurant() {
   //   console.log("restaurantName",restaurantName);
   //   navigate("/menu-selection", { state: { name: restaurantName } });
   // };
+  //
   const [restaurantInfo, setRestaurantInfo] = useState({});
   const [res, setRes] = useState({});
   const [menu, setMenu] = useState([]);
